@@ -1,0 +1,15 @@
+{
+  "name": "position-parser",
+  "version": "0.0.1",
+  "description": "",
+  "main": "parse.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "soidid <soidid@gmail.com>",
+  "dependencies": {
+    "cli-color": "^1.0.0",
+    "csv-parser": "^1.7.0",
+    "moment": "^2.10.6"
+  }
+}
