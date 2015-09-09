@@ -4,6 +4,18 @@ var csv = require('csv-parser')
 var clc = require('cli-color')
 var moment = require('moment')
 
+var PartyView = {};
+/* initialize all issues */
+PartyView['marriageEquality'] = {};
+PartyView['marriageEquality'].title = "婚姻平權";
+PartyView['marriageEquality'].statement = "婚姻不限性別";
+PartyView['marriageEquality'].partyPositions = [];
+PartyView['recall'] = {};
+PartyView['recall'].title = "罷免";
+PartyView['recall'].statement = "罷免門檻下修";
+PartyView['recall'].partyPositions = [];
+
+
 function cht_to_eng(cht){
 	try{
 	switch(cht){
@@ -17,6 +29,8 @@ function cht_to_eng(cht){
 			return 'PFP';
 		case '民國黨':
 			return 'MKT';
+		case '無黨籍':
+			return 'NONE';
 		case '贊成':
 	    	return 'aye';
 	    case '反對':
@@ -24,7 +38,9 @@ function cht_to_eng(cht){
 	    case '模糊':
 	    	return 'unknown';
 	    case '婚姻平權':
-	    	return 'marriage_equality';
+	    	return 'marriageEquality';
+	    case '罷免':
+	    	return 'recall';
 		default: 
 			throw new Error("Oh-Oh-找不到這個詞的英文捏！<o> "+cht);
 
@@ -48,13 +64,6 @@ function format_date_to_unix_milliseconds(date_string){
 		output: Unix Timestamp (milliseconds)
 	*/
 }
-
-var PartyView = {};
-/* initialize all issues */
-PartyView['marriage_equality'] = {};
-PartyView['marriage_equality'].title = "婚姻平權";
-PartyView['marriage_equality'].statement = "婚姻不限性別";
-PartyView['marriage_equality'].partyPositions = [];
 
 function parseToPartyView (records, currentIssue) {// records: [], currentIssue: marriage_equality (e.g.)
 	var Parties = {};
@@ -178,12 +187,14 @@ function parseToPartyView (records, currentIssue) {// records: [], currentIssue:
 
 
 
-var PositionRecords = [];
+
 
 /*
  * TODO : 依照不同的議題分組 
  */
 
+
+var PositionRecords = [];
 fs.createReadStream('data.csv')
   .pipe(csv())
   .on('data', function(data) {
@@ -210,7 +221,23 @@ fs.createReadStream('data.csv')
   .on('error', function (err)  { console.error('Error', err);})
   .on('end',   function ()     { 
   	  
-  	  parseToPartyView(PositionRecords, 'marriage_equality');/////////////////// NOTICE!
+  	  /* 依照不同議題分類，再丟到 parseToPartyView parse 成要的格式 */
+  	  let PositionRecords_Issue = {};
+
+  	  PositionRecords.map((record, index)=>{
+  	  		var issue_eng = cht_to_eng(record.issue);
+
+  	  		if(!PositionRecords_Issue[issue_eng]){
+  	  			PositionRecords_Issue[issue_eng] = []; 
+  	  		}
+  	  		PositionRecords_Issue[issue_eng].push(record); 
+  	  })
+  	 
+
+  	  Object.keys(PositionRecords_Issue).map((issue, index)=>{
+			parseToPartyView(PositionRecords_Issue[issue], issue);
+  	  
+  	  });
 
   	  fs.writeFile('position.json', JSON.stringify(PositionRecords, null, 4), function (err) {
   		if (err) return console.log(err);
