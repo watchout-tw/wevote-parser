@@ -4,9 +4,9 @@ var csv = require('csv-parser')
 var clc = require('cli-color')
 var moment = require('moment')
 
-function party_cht_to_eng(party_cht){
+function cht_to_eng(cht){
 	try{
-	switch(party_cht){
+	switch(cht){
 		case '國民黨':
 			return 'KMT';
 		case '民進黨':
@@ -17,8 +17,16 @@ function party_cht_to_eng(party_cht){
 			return 'PFP';
 		case '民國黨':
 			return 'MKT';
+		case '贊成':
+	    	return 'aye';
+	    case '反對':
+	    	return 'nay';
+	    case '模糊':
+	    	return 'unknown';
+	    case '婚姻平權':
+	    	return 'marriage_equality';
 		default: 
-			throw new Error("Oh-Oh-找不到這個政黨的英文簡稱！<o> "+party_cht);
+			throw new Error("Oh-Oh-找不到這個詞的英文捏！<o> "+cht);
 
 	}
 	}catch(e){
@@ -32,54 +40,169 @@ function format_date_to_unix_milliseconds(date_string){
 	/* 
 		input: 2013/11/8
 	*/
+	let timestamp = date.unix();
+	console.log(timestamp);
 	
-	return moment.milliseconds();
+	return timestamp;
 	/*
 		output: Unix Timestamp (milliseconds)
 	*/
 }
 
-function position_cht_to_eng(position_cht){
-	try{
-	    switch(position_cht){
-	    	case '贊成':
-	    		return 'for';
-	    	case '反對':
-	    		return 'against';
-	    	case '模糊':
-	    		return 'unknown';
-	    	default: 
-	    		throw new Error("找不到這個立場的英文捏～ <o> "+position_cht);
-    
-	    }
-	}catch(e){
-		console.log(clc.red(e));
-		process.exit(1);
-	}
+var PartyView = {};
+/* initialize all issues */
+PartyView['marriage_equality'] = {};
+PartyView['marriage_equality'].title = "婚姻平權";
+PartyView['marriage_equality'].statement = "婚姻不限性別";
+PartyView['marriage_equality'].partyPositions = [];
+
+function parseToPartyView (records, currentIssue) {// records: [], currentIssue: marriage_equality (e.g.)
+	var Parties = {};
+
+	/* 把 表態 依照政黨分組 */
+	records.map((value, index)=>{
+		if(!Parties[value.party])
+			Parties[value.party] = [];
+
+		if(!Parties[value.party].records)
+			Parties[value.party].records = [];
+		
+
+		Parties[value.party].records.push(value);
+
+	});
+
+	/* traverse 每個政黨的記錄，找出最多數，並且記錄「主要立場」跟「百分比」 */
 	
+	Object.keys(Parties).map((currentParty,index)=>{
+		
+		//console.log(`xxxxx ${currentParty} xxxxx`);
+		let count = {}; count.aye = 0, count.nay = 0, count.unknown = 0;
+   	
+		Parties[currentParty].records.map((record, k)=>{
+			count[record.position]++;
+		})
+
+		/** 把 records 依照時間排序 */
+		Parties[currentParty].records.sort((a,b)=>{
+			return a.date - b.date; // 時間早的在前面
+		});
+		
+		/* 把 count換成 array */
+   		let countSort = [];
+        Object.keys(count).map((value, index)=>{
+            countSort.push(
+            {
+              "position": value, 
+              "count": count[value]
+            }
+            );
+        });
+   
+        /* sort，票數最高的在前面 */
+        countSort.sort((a,b)=>{
+          return b.count-a.count;
+        });
+
+       
+    	/* 計算 percentage */
+        let percentage = (countSort[0].count / Parties[currentParty].records.length) * 100;
+        percentage  = +percentage.toFixed(2);// + will drop extra zeros
+
+        Parties[currentParty].dominantPosition = countSort[0].position;
+        Parties[currentParty].dominantPercentage = percentage;
+        
+
+	});
+
+
+	// ok! 這裡就是我們要的結果格式
+	//console.log(Parties);
+
+	
+	/* 最後依照時間排序之後塞到 PartyView['marriage_equality'].partyPositions 底下 */
+
+	Object.keys(Parties).map((currentParty,index)=>{
+
+		if(!PartyView[currentIssue].partyPositions)
+		 	PartyView[currentIssue].partyPositions = []; // initialize
+
+		PartyView[currentIssue].partyPositions.push(
+		{
+			"party" : currentParty,
+    	    "dominantPosition" : Parties[currentParty].dominantPosition, // 主要立場
+    	    "dominantPercentage" : Parties[currentParty].dominantPercentage,
+    	    "records" : Parties[currentParty].records
+		});
+		
+	})
+
+
+
+	fs.writeFile('partyView.json', JSON.stringify(PartyView, null, 4), function (err) {
+  		if (err) return console.log(err);
+  		console.log(clc.bgGreen('PartyView is saved.'));
+	});
+
+/*
+	"marriage_equality" : {
+    	"title" : 婚姻平權,
+    	"statement" : "婚姻不限性別",
+    	"partyPositions: [
+    	    {
+    	    	"party" : "KMT",
+    	    	"dominantPosition" : "nay", // 主要立場
+    	    	"dominantPercentage" : "78.21", // 主要立場比例
+    	    	"records" : [ // 該政黨底下的表態記錄
+    	    	    {
+    	    	        "id" : "xxx", // 之後再一起給
+    	    	        "date" : xxxxxx, //date in timestamp in milliseconds
+    	    	        "legislator" : "丁守中",
+    	    	        "content" : "xxxxxxx",
+    	    	        "position" : "nay",
+    	    	        "clarificationContent" : "我沒有～",
+    	    	        "clarificationLastUpdate" : xxxx //date in timestamp in milliseconds
+    	    	    },
+    	    	    ...
+    	    	    next record
+    	    	]
+    	    },
+    	    ... next party
+    
+    	]
+    }
+*/
 }
 
+
+
+
+
 var PositionRecords = [];
+
+/*
+ * TODO : 依照不同的議題分組 
+ */
 
 fs.createReadStream('data.csv')
   .pipe(csv())
   .on('data', function(data) {
 	  //console.log('row', data['議題名稱'])
 	  var record = {
-	  	Issue : data['議題名稱'],
-	  	Legislator : data['立委名'],
-	  	Party : party_cht_to_eng(data['當時的政黨']),
-	  	Date : data['發言日期'],// try if we can sort this format?
-	  	Category : data['分類'], // { 發言, 提案, 表決 }
-	  	Content : data['內容'],
-	  	Position : position_cht_to_eng(data['立場統計分類']),
-	  	ClarificationContent : data['立委澄清說明'],
-	  	ClarificationLastUpdate : data['澄清說明最後更新時間'],
-	  	LyURL : data['原始來源記錄url （立法院）'],
-	  	Meeting : data['會議別'],
-	  	MeetingCategory : data['會議分類']
+	  	issue : data['議題名稱'],
+	  	legislator : data['立委名'],
+	  	party : cht_to_eng(data['當時的政黨']),
+	  	date : format_date_to_unix_milliseconds(data['發言日期']),// try if we can sort this format?
+	  	category : data['分類'], // { 發言, 提案, 表決 }
+	  	content : data['內容'],
+	  	position : cht_to_eng(data['立場統計分類']),
+	  	clarificationContent : data['立委澄清說明'],
+	  	clarificationLastUpdate : data['澄清說明最後更新時間'],
+	  	lyURL : data['原始來源記錄url （立法院）'],
+	  	meeting : data['會議別'],
+	  	meetingCategory : data['會議分類']
 	  }
-	  console.log(record);
+	  //console.log(record);
 	  PositionRecords.push(record);
 
 
@@ -87,9 +210,11 @@ fs.createReadStream('data.csv')
   .on('error', function (err)  { console.error('Error', err);})
   .on('end',   function ()     { 
   	  
+  	  parseToPartyView(PositionRecords, 'marriage_equality');/////////////////// NOTICE!
+
   	  fs.writeFile('position.json', JSON.stringify(PositionRecords, null, 4), function (err) {
   		if (err) return console.log(err);
-  		console.log(clc.bgGreen('存好哩!  ^_^'));
+  		console.log(clc.bgGreen('position.json is saved.'));
 	  });
   });  
 

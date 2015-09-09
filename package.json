@@ -4,6 +4,7 @@
   "description": "",
   "main": "parse.js",
   "scripts": {
+    "start" : "babel-node parse",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "soidid <soidid@gmail.com>",
