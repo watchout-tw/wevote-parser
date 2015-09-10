@@ -206,6 +206,7 @@ fs.createReadStream('data.csv')
 	  	date : format_date_to_unix_milliseconds(data['發言日期']),// try if we can sort this format?
 	  	category : data['分類'], // { 發言, 提案, 表決 }
 	  	content : data['內容'],
+	  	positionJudgement : data['立場判斷'],
 	  	position : cht_to_eng(data['立場統計分類']),
 	  	clarificationContent : data['立委澄清說明'],
 	  	clarificationLastUpdate : data['澄清說明最後更新時間'],
