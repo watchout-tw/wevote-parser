@@ -28,6 +28,16 @@ LegislatorView['recall'].statement = "罷免門檻下修";
 LegislatorView['recall'].partyPositions = [];
 
 
+var PositionView = {};
+PositionView['marriageEquality'] = {};
+PositionView['marriageEquality'].title = "婚姻平權";
+PositionView['marriageEquality'].statement = "婚姻不限性別";
+PositionView['marriageEquality'].positions = [];
+PositionView['recall'] = {};
+PositionView['recall'].title = "罷免";
+PositionView['recall'].statement = "罷免門檻下修";
+PositionView['recall'].positions = [];
+
 function cht_to_eng(cht){
 	try{
 	switch(cht){
@@ -343,6 +353,60 @@ function parseToLegislatorView (records, currentIssue) {// records: [], currentI
 */
 }
 
+function parseToPositionView (records, currentIssue) {// records: [], currentIssue: marriageEquality (e.g.)
+	var Positions = {};
+
+	/* 把 表態 依照 立場 分組 */
+	
+	records.map((value, index)=>{
+		if(!Positions[value.position]){
+			Positions[value.position] = {};
+			Positions[value.position].position = value.position;
+			Positions[value.position].records = [];
+		}
+
+		
+		Positions[value.position].records.push(value);
+
+	});
+	Object.keys(Positions).map((currentPosition, index)=>{
+		PositionView[currentIssue].positions.push(Positions[currentPosition]);
+		
+	})
+
+
+	fs.writeFile('positionView.json', JSON.stringify(PositionView, null, 4), function (err) {
+  		if (err) return console.log(err);
+  		console.log(clc.bgGreen('PositionView is saved.'));
+	});
+
+/*
+	"marriageEquality" : {
+    	"title" : 婚姻平權,
+    	"statement" : "婚姻不限性別",
+    	"positions: [
+    	    {
+    	    	"position" : "aye",
+    	    	"records" : [ // 該立委的相關表態記錄
+    	    	    {
+    	    	        "id" : "xxx", // 之後再一起給
+    	    	        "date" : xxxxxx, //date in timestamp in milliseconds
+    	    	        "legislator" : "丁守中",
+    	    	        "content" : "xxxxxxx",
+    	    	        "position" : "nay",
+    	    	        "clarificationContent" : "我沒有～",
+    	    	        "clarificationLastUpdate" : xxxx //date in timestamp in milliseconds
+    	    	    },
+    	    	    ...
+    	    	    next record
+    	    },
+    	    ... next position
+    
+    	]
+    }
+*/
+}
+
 var PositionRecords = [];
 fs.createReadStream('data.csv')
   .pipe(csv())
@@ -389,7 +453,8 @@ fs.createReadStream('data.csv')
 
   	  		/* 丟到 parseToPartyView parse 成要的格式 */
 			//parseToPartyView(PositionRecords_Issue[issue], issue);
-			parseToLegislatorView(PositionRecords_Issue[issue], issue);
+			//parseToLegislatorView(PositionRecords_Issue[issue], issue);
+			parseToPositionView(PositionRecords_Issue[issue], issue);
   	  
   	  });
 
