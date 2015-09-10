@@ -5,6 +5,8 @@ var clc = require('cli-color')
 var moment = require('moment')
 
 var PartyView = {};
+
+////// Needs refactor /////
 /* initialize all issues */
 PartyView['marriageEquality'] = {};
 PartyView['marriageEquality'].title = "婚姻平權";
@@ -14,6 +16,16 @@ PartyView['recall'] = {};
 PartyView['recall'].title = "罷免";
 PartyView['recall'].statement = "罷免門檻下修";
 PartyView['recall'].partyPositions = [];
+
+var LegislatorView = {};
+LegislatorView['marriageEquality'] = {};
+LegislatorView['marriageEquality'].title = "婚姻平權";
+LegislatorView['marriageEquality'].statement = "婚姻不限性別";
+LegislatorView['marriageEquality'].partyPositions = [];
+LegislatorView['recall'] = {};
+LegislatorView['recall'].title = "罷免";
+LegislatorView['recall'].statement = "罷免門檻下修";
+LegislatorView['recall'].partyPositions = [];
 
 
 function cht_to_eng(cht){
@@ -129,7 +141,7 @@ function parseToPartyView (records, currentIssue) {// records: [], currentIssue:
 	//console.log(Parties);
 
 	
-	/* 最後依照時間排序之後塞到 PartyView['marriage_equality'].partyPositions 底下 */
+	/* 最後依照時間排序之後塞到 PartyView['marriageEquality'].partyPositions 底下 */
 
 	Object.keys(Parties).map((currentParty,index)=>{
 
@@ -184,15 +196,149 @@ function parseToPartyView (records, currentIssue) {// records: [], currentIssue:
 }
 
 
+function parseToLegislatorView (records, currentIssue) {// records: [], currentIssue: marriageEquality (e.g.)
+	var Legislators = {};
+
+	/* 把 表態 依照 立委 分組 */
+
+	// 先分出每個立委底下有哪些 record
+	records.map((value, index)=>{
+		if(!Legislators[value.legislator]){
+			Legislators[value.legislator] = {};//empty object for one legislator
+			Legislators[value.legislator].name = value.legislator; //'丁守中'
+		}
+
+		if(!Legislators[value.legislator].records)
+			Legislators[value.legislator].records = [];
+		
+
+		Legislators[value.legislator].records.push(value);
+
+	});
+	//console.log(Legislators)
+
+
+	// 再計算每個立委的主要立場 & 比例
+	Object.keys(Legislators).map((currentLegislator,indx)=>{
+		
+		let count = {}; count.aye = 0, count.nay = 0, count.unknown = 0;
+   	
+		Legislators[currentLegislator].records.map((record,k)=>{
+			count[record.position]++;
+
+		})
+
+		/** 把 records 依照時間排序 */
+		Legislators[currentLegislator].records.sort((a,b)=>{
+			return a.date - b.date; // 時間早的在前面
+		});
+		
+		/* 把 count換成 array */
+   		let countSort = [];
+        Object.keys(count).map((value, index)=>{
+            countSort.push(
+            {
+              "position": value, 
+              "count": count[value]
+            }
+            );
+        });
+
+        /* sort，票數最高的在前面 */
+        countSort.sort((a,b)=>{
+          return b.count-a.count;
+        });
+
+       
+    	/* 計算 percentage */
+        let percentage = (countSort[0].count / Legislators[currentLegislator].records.length) * 100;
+        percentage  = +percentage.toFixed(2);// + will drop extra zeros
+
+        Legislators[currentLegislator].dominantPosition = countSort[0].position;
+        Legislators[currentLegislator].dominantPercentage = percentage;
+
+	});
+	//console.log(Legislators)
+
+	// 再依照主要立場分人，算出最後的結果
+	let PositionGroup = {};
+	Object.keys(Legislators).map((currentLegislator,index)=>{
+		let currentPosition = Legislators[currentLegislator].dominantPosition;
+
+		if(!PositionGroup[currentPosition])//initialize
+			PositionGroup[currentPosition] = [];
+
+		PositionGroup[currentPosition].push(Legislators[currentLegislator]);
+	});
+
+	//console.log(PositionGroup);
+	
+	/* 最後依照時間排序之後塞到 LegislatorView['marriageEquality'] 底下 */
+
+	Object.keys(PositionGroup).map((currentPosition,index)=>{
+
+	    if(!LegislatorView[currentIssue].positions)
+		 	LegislatorView[currentIssue].positions = []; // initialize
+
+		
+
+		LegislatorView[currentIssue].positions.push(
+		{
+			"position" : currentPosition,
+    	    "legislators" : PositionGroup[currentPosition]
+		});
+		
+	});
+
+	console.log(LegislatorView)
 
 
 
 
+	fs.writeFile('legislatorView.json', JSON.stringify(LegislatorView, null, 4), function (err) {
+  		if (err) return console.log(err);
+  		console.log(clc.bgGreen('LegislatorView is saved.'));
+	});
 
 /*
- * TODO : 依照不同的議題分組 
- */
+	"marriageEquality" : {
+    	"title" : 婚姻平權,
+    	"statement" : "婚姻不限性別",
+    	"positions: [
+    	    {
+    	    	"position" : "aye",
+    	    	"legislators" : [
+    	    		{
+    	    			"name" : '丁守中',
+    	    			"dominantPosition" : "aye", // 主要立場
+    	    			"dominantPercentage" : "78.21", // 主要立場比例
+    	    			"records" : [ // 該立委的相關表態記錄
+    	    	            {
+    	    	                "id" : "xxx", // 之後再一起給
+    	    	                "date" : xxxxxx, //date in timestamp in milliseconds
+    	    	                "legislator" : "丁守中",
+    	    	                "content" : "xxxxxxx",
+    	    	                "position" : "nay",
+    	    	                "clarificationContent" : "我沒有～",
+    	    	                "clarificationLastUpdate" : xxxx //date in timestamp in milliseconds
+    	    	            },
+    	    	            ...
+    	    	            next record
+    	    	        ]
 
+    	    		},
+    	    		...
+    	    		next legislator
+    	    	]
+    	    	
+    	    	
+    	    },
+    	    ... next position
+    
+    	]
+    }
+*/
+}
 
 var PositionRecords = [];
 fs.createReadStream('data.csv')
@@ -222,7 +368,8 @@ fs.createReadStream('data.csv')
   .on('error', function (err)  { console.error('Error', err);})
   .on('end',   function ()     { 
   	  
-  	  /* 依照不同議題分類，再丟到 parseToPartyView parse 成要的格式 */
+  	  /* 依照不同議題分類 */
+  	  
   	  let PositionRecords_Issue = {};
 
   	  PositionRecords.map((record, index)=>{
@@ -236,9 +383,13 @@ fs.createReadStream('data.csv')
   	 
 
   	  Object.keys(PositionRecords_Issue).map((issue, index)=>{
-			parseToPartyView(PositionRecords_Issue[issue], issue);
+
+  	  		/* 丟到 parseToPartyView parse 成要的格式 */
+			//parseToPartyView(PositionRecords_Issue[issue], issue);
+			parseToLegislatorView(PositionRecords_Issue[issue], issue);
   	  
   	  });
+
 
   	  fs.writeFile('position.json', JSON.stringify(PositionRecords, null, 4), function (err) {
   		if (err) return console.log(err);
