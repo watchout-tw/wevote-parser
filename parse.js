@@ -206,6 +206,8 @@ function parseToLegislatorView (records, currentIssue) {// records: [], currentI
 		if(!Legislators[value.legislator]){
 			Legislators[value.legislator] = {};//empty object for one legislator
 			Legislators[value.legislator].name = value.legislator; //'丁守中'
+			Legislators[value.legislator].party = value.party; //KTM 
+			/***** 目前沒辦法處理一個人在不同政黨有不同立場表態的狀況 ******/
 		}
 
 		if(!Legislators[value.legislator].records)
@@ -310,6 +312,7 @@ function parseToLegislatorView (records, currentIssue) {// records: [], currentI
     	    	"legislators" : [
     	    		{
     	    			"name" : '丁守中',
+    	    			"party" : KMT,
     	    			"dominantPosition" : "aye", // 主要立場
     	    			"dominantPercentage" : "78.21", // 主要立場比例
     	    			"records" : [ // 該立委的相關表態記錄
