@@ -1,8 +1,11 @@
-console.log("hooooo")
+
 var fs = require('fs')
 var csv = require('csv-parser')
 var clc = require('cli-color')
 var moment = require('moment')
+
+const START_ID = 1;
+
 
 var PartyView = {};
 
@@ -408,11 +411,14 @@ function parseToPositionView (records, currentIssue) {// records: [], currentIss
 }
 
 var PositionRecords = [];
+var currentID = START_ID;
+
 fs.createReadStream('data.csv')
   .pipe(csv())
   .on('data', function(data) {
 	  //console.log('row', data['議題名稱'])
 	  var record = {
+	  	id : currentID,
 	  	issue : data['議題名稱'],
 	  	legislator : data['立委名'],
 	  	party : cht_to_eng(data['當時的政黨']),
@@ -430,7 +436,7 @@ fs.createReadStream('data.csv')
 	  //console.log(record);
 	  PositionRecords.push(record);
 
-
+	  currentID++;
   })
   .on('error', function (err)  { console.error('Error', err);})
   .on('end',   function ()     { 
@@ -452,8 +458,9 @@ fs.createReadStream('data.csv')
   	  Object.keys(PositionRecords_Issue).map((issue, index)=>{
 
   	  		/* 丟到 parseToPartyView parse 成要的格式 */
-			//parseToPartyView(PositionRecords_Issue[issue], issue);
-			//parseToLegislatorView(PositionRecords_Issue[issue], issue);
+			
+			parseToPartyView(PositionRecords_Issue[issue], issue);
+			parseToLegislatorView(PositionRecords_Issue[issue], issue);
 			parseToPositionView(PositionRecords_Issue[issue], issue);
   	  
   	  });
