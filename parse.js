@@ -466,7 +466,7 @@ fs.createReadStream('data.csv')
   	  });
 
 
-  	  fs.writeFile('position.json', JSON.stringify(PositionRecords, null, 4), function (err) {
+  	  fs.writeFile('positionRecords.json', JSON.stringify(PositionRecords, null, 4), function (err) {
   		if (err) return console.log(err);
   		console.log(clc.bgGreen('position.json is saved.'));
 	  });
