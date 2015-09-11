@@ -8,6 +8,7 @@ const START_ID = 1;
 
 
 var Candidates = {};
+var Name2ID = {};
 var currentID = START_ID;
 
 fs.createReadStream('parseCandidate/data.csv')
@@ -23,6 +24,7 @@ fs.createReadStream('parseCandidate/data.csv')
 	  console.log(record);
 	  
 	  Candidates[currentID] = record;
+	  Name2ID[record.name] = currentID;
 
 	  currentID++;
   })
@@ -35,5 +37,11 @@ fs.createReadStream('parseCandidate/data.csv')
   		if (err) return console.log(err);
   		console.log(clc.bgGreen('candidates.json is saved.'));
 	  });
+	  
+	  fs.writeFile('parseCandidate/name2id.json', JSON.stringify(Name2ID, null, 4), function (err) {
+  		if (err) return console.log(err);
+  		console.log(clc.bgGreen('name2id.json is saved.'));
+	  });
+	  
   });  
 
