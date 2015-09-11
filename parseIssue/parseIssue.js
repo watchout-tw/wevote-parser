@@ -173,7 +173,7 @@ function parseToPartyView (records, currentIssue) {// records: [], currentIssue:
 
 
 
-	fs.writeFile('partyView.json', JSON.stringify(PartyView, null, 4), function (err) {
+	fs.writeFile('parseIssue/partyView.json', JSON.stringify(PartyView, null, 4), function (err) {
   		if (err) return console.log(err);
   		console.log(clc.bgGreen('PartyView is saved.'));
 	});
@@ -310,7 +310,7 @@ function parseToLegislatorView (records, currentIssue) {// records: [], currentI
 
 
 
-	fs.writeFile('legislatorView.json', JSON.stringify(LegislatorView, null, 4), function (err) {
+	fs.writeFile('parseIssue/legislatorView.json', JSON.stringify(LegislatorView, null, 4), function (err) {
   		if (err) return console.log(err);
   		console.log(clc.bgGreen('LegislatorView is saved.'));
 	});
@@ -378,7 +378,7 @@ function parseToPositionView (records, currentIssue) {// records: [], currentIss
 	})
 
 
-	fs.writeFile('positionView.json', JSON.stringify(PositionView, null, 4), function (err) {
+	fs.writeFile('parseIssue/positionView.json', JSON.stringify(PositionView, null, 4), function (err) {
   		if (err) return console.log(err);
   		console.log(clc.bgGreen('PositionView is saved.'));
 	});
@@ -413,7 +413,7 @@ function parseToPositionView (records, currentIssue) {// records: [], currentIss
 var PositionRecords = [];
 var currentID = START_ID;
 
-fs.createReadStream('data.csv')
+fs.createReadStream('parseIssue/data.csv')
   .pipe(csv())
   .on('data', function(data) {
 	  //console.log('row', data['議題名稱'])
@@ -466,7 +466,7 @@ fs.createReadStream('data.csv')
   	  });
 
 
-  	  fs.writeFile('positionRecords.json', JSON.stringify(PositionRecords, null, 4), function (err) {
+  	  fs.writeFile('parseIssue/positionRecords.json', JSON.stringify(PositionRecords, null, 4), function (err) {
   		if (err) return console.log(err);
   		console.log(clc.bgGreen('position.json is saved.'));
 	  });

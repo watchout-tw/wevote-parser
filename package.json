@@ -4,7 +4,8 @@
   "description": "",
   "main": "parse.js",
   "scripts": {
-    "start" : "babel-node parse",
+    "start" : "babel-node parseCandidate/parseCandidate",
+    "parseIssue" : "babel-node parseIssue/parseIssue",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "soidid <soidid@gmail.com>",
