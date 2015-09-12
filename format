@@ -102,7 +102,21 @@ SingleLegislatorView
     "丁守中" : {
         "positions: {
             "marriageEquality": {
-                "dominantPosition" : "aye",
+                "totalCounts" : 27,
+                "positionCounts" : [
+                    {
+                        "position":"nay",
+                        "count" : 14
+                    },
+                    {
+                        "position":"unknow",
+                        "count" : 1
+                    },
+                    {
+                        "position":"aye",
+                        "count" : 12
+                    }
+                ]
                 "records" : [ // 該立委的相關表態記錄
                     {
                         "id" : "xxx", 

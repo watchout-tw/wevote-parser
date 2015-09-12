@@ -76,7 +76,6 @@ function cht_to_eng(cht){
 		console.log(clc.red(e));
 		process.exit(1);
 	}
-	
 }
 function format_date_to_unix_milliseconds(date_string){
 	var date = moment(date_string, "YYYY/MM/DD");
@@ -179,10 +178,7 @@ function parseToPartyView (records, currentIssue) {// records: [], currentIssue:
   		if (err) return console.log(err);
   		console.log(clc.bgGreen('PartyView is saved.'));
 	});
-
-
 }
-
 
 function parseToLegislatorView (records, currentIssue) {// records: [], currentIssue: marriageEquality (e.g.)
 	var Legislators = {};
@@ -250,31 +246,6 @@ function parseToLegislatorView (records, currentIssue) {// records: [], currentI
 	});
 	//console.log(Legislators)
 
-	/*******************************************************/
-	/* 這裡得到每個立委在這個議題的立場，存到 LegislatorView 裡面 */
-	/*******************************************************/
-	Object.keys(Legislators).map((currentLegislator,indx)=>{
-		if(!CandidatePosition[currentLegislator]){
-			CandidatePosition[currentLegislator] = {};
-			CandidatePosition[currentLegislator].name = currentLegislator;
-			CandidatePosition[currentLegislator].positions = {};
-		}
-		
-		//整理架構
-		CandidatePosition[currentLegislator].positions[currentIssue] = {
-			dominantPosition: Legislators[currentLegislator].dominantPosition,
-			dominantPercentage: Legislators[currentLegislator].dominantPercentage,
-			records: Legislators[currentLegislator].records
-		};
-
-
-	});
-	/*******************************************************/
-
-
-
-
-
 	// 再依照主要立場分人，算出最後的結果
 	let PositionGroup = {};
 
@@ -318,13 +289,6 @@ function parseToLegislatorView (records, currentIssue) {// records: [], currentI
   		if (err) return console.log(err);
   		console.log(clc.bgGreen('LegislatorView is saved.'));
 	});
-
-	fs.writeFile('parseIssue/candidatePosition.json', JSON.stringify(CandidatePosition, null, 4), function (err) {
-  		if (err) return console.log(err);
-  		console.log(clc.bgGreen('CandidatePosition is saved.'));
-	});
-
-
 }
 
 function parseToPositionView (records, currentIssue) {// records: [], currentIssue: marriageEquality (e.g.)
@@ -361,11 +325,86 @@ function parseToPositionView (records, currentIssue) {// records: [], currentIss
   		if (err) return console.log(err);
   		console.log(clc.bgGreen('PositionView is saved.'));
 	});
+}
+
+function parseToCandidatePosition (records, currentIssue) {// records: [], currentIssue: marriageEquality (e.g.)
+	var Legislators = {};
+
+	/* 把 表態 依照 立委 分組 */
+
+	// 先分出每個立委底下有哪些 record
+	records.map((value, index)=>{
+		if(!Legislators[value.legislator]){
+			Legislators[value.legislator] = {};//empty object for one legislator
+			/***** 目前沒辦法處理一個人在不同政黨有不同立場表態的狀況 ******/
+		}
+
+		if(!Legislators[value.legislator].records)
+			Legislators[value.legislator].records = [];
+		
+
+		Legislators[value.legislator].records.push(value);
+
+	});
+	//console.log(Legislators)
+
+
+	// 再計算每個立委的主要立場 & 比例
+	Object.keys(Legislators).map((currentLegislator,indx)=>{
+		
+		let count = {}; count.aye = 0, count.nay = 0, count.unknown = 0;
+   	
+		Legislators[currentLegislator].records.map((record,k)=>{
+			count[record.position]++;
+
+		})
+
+		/** 把 records 依照時間排序 */
+		Legislators[currentLegislator].records.sort((a,b)=>{
+			return a.date - b.date; // 時間早的在前面
+		});
+		
+		Legislators[currentLegislator].positionCounts = [];
+		Legislators[currentLegislator].positionCounts.push({
+			"position" : "nay",
+			"count" : count.nay
+		})
+		Legislators[currentLegislator].positionCounts.push({
+			"position" : "unknown",
+			"count" : count.unknown
+		})
+		Legislators[currentLegislator].positionCounts.push({
+			"position" : "aye",
+			"count" : count.aye
+		})
+
+		Legislators[currentLegislator].totalCounts = Legislators[currentLegislator].records.length;
+
+	});
+	//console.log(Legislators)
+
+	/*******************************************************/
+	/* 這裡得到每個立委在這個議題的立場，存到 LegislatorView 裡面 */
+	/*******************************************************/
+	Object.keys(Legislators).map((currentLegislator,indx)=>{
+		if(!CandidatePosition[currentLegislator]){
+			CandidatePosition[currentLegislator] = {};
+			CandidatePosition[currentLegislator].name = currentLegislator;
+			CandidatePosition[currentLegislator].positions = {};
+		}
+		
+		CandidatePosition[currentLegislator].positions[currentIssue] = Legislators[currentLegislator];
+
+	});
+	
+
+	fs.writeFile('parseIssue/candidatePosition.json', JSON.stringify(CandidatePosition, null, 4), function (err) {
+  		if (err) return console.log(err);
+  		console.log(clc.bgGreen('CandidatePosition is saved.'));
+	});
 
 
 }
-
-
 
 var PositionRecords = [];
 var currentID = START_ID;
@@ -417,6 +456,9 @@ fs.createReadStream('parseIssue/data.csv')
 			parseToPartyView(PositionRecords_Issue[issue], issue);
 			parseToLegislatorView(PositionRecords_Issue[issue], issue);
 			parseToPositionView(PositionRecords_Issue[issue], issue);
+
+			//
+			parseToCandidatePosition(PositionRecords_Issue[issue], issue);
   	  
   	  });
 
