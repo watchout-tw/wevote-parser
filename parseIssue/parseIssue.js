@@ -277,11 +277,17 @@ function parseToLegislatorView (records, currentIssue) {// records: [], currentI
 
 	// 再依照主要立場分人，算出最後的結果
 	let PositionGroup = {};
+
+	//順序固定是 反對 - 模糊 - 贊成
+	PositionGroup["nay"] = [];
+	PositionGroup["unknown"] = [];
+	PositionGroup["aye"] = [];
+
 	Object.keys(Legislators).map((currentLegislator,index)=>{
 		let currentPosition = Legislators[currentLegislator].dominantPosition;
 
-		if(!PositionGroup[currentPosition])//initialize
-			PositionGroup[currentPosition] = [];
+		if(!PositionGroup[currentPosition])
+			throw new Error("未定義的立場："+currentPosition);
 
 		PositionGroup[currentPosition].push(Legislators[currentLegislator]);
 	});
@@ -294,8 +300,6 @@ function parseToLegislatorView (records, currentIssue) {// records: [], currentI
 
 	    if(!LegislatorView[currentIssue].positions)
 		 	LegislatorView[currentIssue].positions = []; // initialize
-
-		
 
 		LegislatorView[currentIssue].positions.push(
 		{
@@ -360,18 +364,26 @@ function parseToPositionView (records, currentIssue) {// records: [], currentIss
 	var Positions = {};
 
 	/* 把 表態 依照 立場 分組 */
-	
+	//順序固定是 反對 - 模糊 - 贊成
+	Positions["nay"] = {};
+	Positions["unknown"] = {};
+	Positions["aye"] = {};
+
+	Object.keys(Positions).map((key,index)=>{
+		Positions[key].position = key;
+		Positions[key].records = [];
+	})
+
+
 	records.map((value, index)=>{
 		if(!Positions[value.position]){
-			Positions[value.position] = {};
-			Positions[value.position].position = value.position;
-			Positions[value.position].records = [];
+			throw new Error("未定義的立場："+Positions[value.position]);
 		}
-
-		
 		Positions[value.position].records.push(value);
 
 	});
+
+
 	Object.keys(Positions).map((currentPosition, index)=>{
 		PositionView[currentIssue].positions.push(Positions[currentPosition]);
 		
