@@ -41,6 +41,8 @@ PositionView['recall'].title = "罷免";
 PositionView['recall'].statement = "罷免門檻下修";
 PositionView['recall'].positions = [];
 
+var SingleLegislatorView = {};
+
 function cht_to_eng(cht){
 	try{
 	switch(cht){
@@ -178,34 +180,7 @@ function parseToPartyView (records, currentIssue) {// records: [], currentIssue:
   		console.log(clc.bgGreen('PartyView is saved.'));
 	});
 
-/*
-	"marriage_equality" : {
-    	"title" : 婚姻平權,
-    	"statement" : "婚姻不限性別",
-    	"partyPositions: [
-    	    {
-    	    	"party" : "KMT",
-    	    	"dominantPosition" : "nay", // 主要立場
-    	    	"dominantPercentage" : "78.21", // 主要立場比例
-    	    	"records" : [ // 該政黨底下的表態記錄
-    	    	    {
-    	    	        "id" : "xxx", // 之後再一起給
-    	    	        "date" : xxxxxx, //date in timestamp in milliseconds
-    	    	        "legislator" : "丁守中",
-    	    	        "content" : "xxxxxxx",
-    	    	        "position" : "nay",
-    	    	        "clarificationContent" : "我沒有～",
-    	    	        "clarificationLastUpdate" : xxxx //date in timestamp in milliseconds
-    	    	    },
-    	    	    ...
-    	    	    next record
-    	    	]
-    	    },
-    	    ... next party
-    
-    	]
-    }
-*/
+
 }
 
 
@@ -275,6 +250,31 @@ function parseToLegislatorView (records, currentIssue) {// records: [], currentI
 	});
 	//console.log(Legislators)
 
+	/*******************************************************/
+	/* 這裡得到每個立委在這個議題的立場，存到 LegislatorView 裡面 */
+	/*******************************************************/
+	Object.keys(Legislators).map((currentLegislator,indx)=>{
+		if(!SingleLegislatorView[currentLegislator]){
+			SingleLegislatorView[currentLegislator] = {};
+			SingleLegislatorView[currentLegislator].name = currentLegislator;
+			SingleLegislatorView[currentLegislator].positions = {};
+		}
+		
+		//整理架構
+		SingleLegislatorView[currentLegislator].positions[currentIssue] = {
+			dominantPosition: Legislators[currentLegislator].dominantPosition,
+			dominantPercentage: Legislators[currentLegislator].dominantPercentage,
+			records: Legislators[currentLegislator].records
+		};
+
+
+	});
+	/*******************************************************/
+
+
+
+
+
 	// 再依照主要立場分人，算出最後的結果
 	let PositionGroup = {};
 
@@ -319,45 +319,12 @@ function parseToLegislatorView (records, currentIssue) {// records: [], currentI
   		console.log(clc.bgGreen('LegislatorView is saved.'));
 	});
 
-/*
-	"marriageEquality" : {
-    	"title" : 婚姻平權,
-    	"statement" : "婚姻不限性別",
-    	"positions: [
-    	    {
-    	    	"position" : "aye",
-    	    	"legislators" : [
-    	    		{
-    	    			"name" : '丁守中',
-    	    			"party" : KMT,
-    	    			"dominantPosition" : "aye", // 主要立場
-    	    			"dominantPercentage" : "78.21", // 主要立場比例
-    	    			"records" : [ // 該立委的相關表態記錄
-    	    	            {
-    	    	                "id" : "xxx", // 之後再一起給
-    	    	                "date" : xxxxxx, //date in timestamp in milliseconds
-    	    	                "legislator" : "丁守中",
-    	    	                "content" : "xxxxxxx",
-    	    	                "position" : "nay",
-    	    	                "clarificationContent" : "我沒有～",
-    	    	                "clarificationLastUpdate" : xxxx //date in timestamp in milliseconds
-    	    	            },
-    	    	            ...
-    	    	            next record
-    	    	        ]
+	fs.writeFile('parseIssue/singleLegislatorView.json', JSON.stringify(SingleLegislatorView, null, 4), function (err) {
+  		if (err) return console.log(err);
+  		console.log(clc.bgGreen('LegislatorView is saved.'));
+	});
 
-    	    		},
-    	    		...
-    	    		next legislator
-    	    	]
-    	    	
-    	    	
-    	    },
-    	    ... next position
-    
-    	]
-    }
-*/
+
 }
 
 function parseToPositionView (records, currentIssue) {// records: [], currentIssue: marriageEquality (e.g.)
@@ -395,32 +362,10 @@ function parseToPositionView (records, currentIssue) {// records: [], currentIss
   		console.log(clc.bgGreen('PositionView is saved.'));
 	});
 
-/*
-	"marriageEquality" : {
-    	"title" : 婚姻平權,
-    	"statement" : "婚姻不限性別",
-    	"positions: [
-    	    {
-    	    	"position" : "aye",
-    	    	"records" : [ // 該立委的相關表態記錄
-    	    	    {
-    	    	        "id" : "xxx", // 之後再一起給
-    	    	        "date" : xxxxxx, //date in timestamp in milliseconds
-    	    	        "legislator" : "丁守中",
-    	    	        "content" : "xxxxxxx",
-    	    	        "position" : "nay",
-    	    	        "clarificationContent" : "我沒有～",
-    	    	        "clarificationLastUpdate" : xxxx //date in timestamp in milliseconds
-    	    	    },
-    	    	    ...
-    	    	    next record
-    	    },
-    	    ... next position
-    
-    	]
-    }
-*/
+
 }
+
+
 
 var PositionRecords = [];
 var currentID = START_ID;
@@ -453,8 +398,8 @@ fs.createReadStream('parseIssue/data.csv')
   .on('error', function (err)  { console.error('Error', err);})
   .on('end',   function ()     { 
   	  
-  	  /* 依照不同議題分類 */
   	  
+  	  /* 依照不同議題分類，然後把每個議題的資料丟進去 */
   	  let PositionRecords_Issue = {};
 
   	  PositionRecords.map((record, index)=>{
@@ -466,11 +411,9 @@ fs.createReadStream('parseIssue/data.csv')
   	  		PositionRecords_Issue[issue_eng].push(record); 
   	  })
   	 
-
   	  Object.keys(PositionRecords_Issue).map((issue, index)=>{
 
   	  		/* 丟到 parseToPartyView parse 成要的格式 */
-			
 			parseToPartyView(PositionRecords_Issue[issue], issue);
 			parseToLegislatorView(PositionRecords_Issue[issue], issue);
 			parseToPositionView(PositionRecords_Issue[issue], issue);

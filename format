@@ -1,0 +1,123 @@
+PartyView
+/*
+    "marriage_equality" : {
+        "title" : 婚姻平權,
+        "statement" : "婚姻不限性別",
+        "partyPositions: [
+            {
+                "party" : "KMT",
+                "dominantPosition" : "nay", // 主要立場
+                "dominantPercentage" : "78.21", // 主要立場比例
+                "records" : [ // 該政黨底下的表態記錄
+                    {
+                        "id" : "xxx", // 之後再一起給
+                        "date" : xxxxxx, //date in timestamp in milliseconds
+                        "legislator" : "丁守中",
+                        "content" : "xxxxxxx",
+                        "position" : "nay",
+                        "clarificationContent" : "我沒有～",
+                        "clarificationLastUpdate" : xxxx //date in timestamp in milliseconds
+                    },
+                    ...
+                    next record
+                ]
+            },
+            ... next party
+    
+        ]
+    }
+*/
+
+LegislatorView
+/*
+    "marriageEquality" : {
+        "title" : 婚姻平權,
+        "statement" : "婚姻不限性別",
+        "positions: [
+            {
+                "position" : "aye",
+                "legislators" : [
+                    {
+                        "name" : '丁守中',
+                        "party" : KMT,
+                        "dominantPosition" : "aye", // 主要立場
+                        "dominantPercentage" : "78.21", // 主要立場比例
+                        "records" : [ // 該立委的相關表態記錄
+                            {
+                                "id" : "xxx", // 之後再一起給
+                                "date" : xxxxxx, //date in timestamp in milliseconds
+                                "legislator" : "丁守中",
+                                "content" : "xxxxxxx",
+                                "position" : "nay",
+                                "clarificationContent" : "我沒有～",
+                                "clarificationLastUpdate" : xxxx //date in timestamp in milliseconds
+                            },
+                            ...
+                            next record
+                        ]
+
+                    },
+                    ...
+                    next legislator
+                ]
+                
+                
+            },
+            ... next position
+    
+        ]
+    }
+*/
+
+Position View
+/*
+    "marriageEquality" : {
+        "title" : 婚姻平權,
+        "statement" : "婚姻不限性別",
+        "positions: [
+            {
+                "position" : "aye",
+                "records" : [ // 該立委的相關表態記錄
+                    {
+                        "id" : "xxx", // 之後再一起給
+                        "date" : xxxxxx, //date in timestamp in milliseconds
+                        "legislator" : "丁守中",
+                        "content" : "xxxxxxx",
+                        "position" : "nay",
+                        "clarificationContent" : "我沒有～",
+                        "clarificationLastUpdate" : xxxx //date in timestamp in milliseconds
+                    },
+                    ...
+                    next record
+            },
+            ... next position
+    
+        ]
+    }
+*/
+
+
+SingleLegislatorView
+/*
+    "丁守中" : {
+        "positions: {
+            "marriageEquality": {
+                "dominantPosition" : "aye",
+                "records" : [ // 該立委的相關表態記錄
+                    {
+                        "id" : "xxx", 
+                        "date" : xxxxxx, //date in timestamp in milliseconds
+                        "legislator" : "丁守中",
+                        "content" : "xxxxxxx",
+                        "position" : "nay",
+                        "clarificationContent" : "我沒有～",
+                        "clarificationLastUpdate" : xxxx //date in timestamp in milliseconds
+                    },
+                    ...
+                    next record
+            },
+            ... next issue
+    
+        }
+    }
+*/
