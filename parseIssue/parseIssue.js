@@ -41,7 +41,7 @@ PositionView['recall'].title = "罷免";
 PositionView['recall'].statement = "罷免門檻下修";
 PositionView['recall'].positions = [];
 
-var SingleLegislatorView = {};
+var CandidatePosition = {};
 
 function cht_to_eng(cht){
 	try{
@@ -254,14 +254,14 @@ function parseToLegislatorView (records, currentIssue) {// records: [], currentI
 	/* 這裡得到每個立委在這個議題的立場，存到 LegislatorView 裡面 */
 	/*******************************************************/
 	Object.keys(Legislators).map((currentLegislator,indx)=>{
-		if(!SingleLegislatorView[currentLegislator]){
-			SingleLegislatorView[currentLegislator] = {};
-			SingleLegislatorView[currentLegislator].name = currentLegislator;
-			SingleLegislatorView[currentLegislator].positions = {};
+		if(!CandidatePosition[currentLegislator]){
+			CandidatePosition[currentLegislator] = {};
+			CandidatePosition[currentLegislator].name = currentLegislator;
+			CandidatePosition[currentLegislator].positions = {};
 		}
 		
 		//整理架構
-		SingleLegislatorView[currentLegislator].positions[currentIssue] = {
+		CandidatePosition[currentLegislator].positions[currentIssue] = {
 			dominantPosition: Legislators[currentLegislator].dominantPosition,
 			dominantPercentage: Legislators[currentLegislator].dominantPercentage,
 			records: Legislators[currentLegislator].records
@@ -319,9 +319,9 @@ function parseToLegislatorView (records, currentIssue) {// records: [], currentI
   		console.log(clc.bgGreen('LegislatorView is saved.'));
 	});
 
-	fs.writeFile('parseIssue/singleLegislatorView.json', JSON.stringify(SingleLegislatorView, null, 4), function (err) {
+	fs.writeFile('parseIssue/candidatePosition.json', JSON.stringify(CandidatePosition, null, 4), function (err) {
   		if (err) return console.log(err);
-  		console.log(clc.bgGreen('LegislatorView is saved.'));
+  		console.log(clc.bgGreen('CandidatePosition is saved.'));
 	});
 
 
