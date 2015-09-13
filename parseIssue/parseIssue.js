@@ -358,6 +358,26 @@ function parseToCandidatePosition (records, currentIssue) {// records: [], curre
 			count[record.position]++;
 
 		})
+		
+		/* 計算 dominant position */
+		/* 把 count換成 array */
+   	    let countSort = [];
+        Object.keys(count).map((value, index)=>{
+            countSort.push(
+            {
+              "position": value, 
+              "count": count[value]
+            }
+            );
+        });
+    
+        /* sort，票數最高的在前面 */
+        countSort.sort((a,b)=>{
+          return b.count-a.count;
+        });
+    
+        Legislators[currentLegislator].dominantPosition = countSort[0].position;
+
 
 		/** 把 records 依照時間排序 */
 		Legislators[currentLegislator].records.sort((a,b)=>{
@@ -382,6 +402,8 @@ function parseToCandidatePosition (records, currentIssue) {// records: [], curre
 
 	});
 	//console.log(Legislators)
+
+
 
 	/*******************************************************/
 	/* 這裡得到每個立委在這個議題的立場，存到 LegislatorView 裡面 */
