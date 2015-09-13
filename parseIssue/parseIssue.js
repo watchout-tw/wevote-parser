@@ -5,7 +5,7 @@ var clc = require('cli-color')
 var moment = require('moment')
 
 const START_ID = 1;
-
+const IssueList = ['marriageEquality', 'recall'];
 
 var PartyView = {};
 
@@ -326,23 +326,23 @@ function parseToPositionView (records, currentIssue) {// records: [], currentIss
   		console.log(clc.bgGreen('PositionView is saved.'));
 	});
 }
-
-function parseToCandidatePosition (records, currentIssue) {// records: [], currentIssue: marriageEquality (e.g.)
-	var Legislators = {};
-
+function parseToCandidatePosition_Proceed(Legislators, records, currentIssue){
+	console.log(Legislators)
 	/* 把 表態 依照 立委 分組 */
-
+   
 	// 先分出每個立委底下有哪些 record
 	records.map((value, index)=>{
+
+		console.log(value.legislator)
 		if(!Legislators[value.legislator]){
-			Legislators[value.legislator] = {};//empty object for one legislator
-			/***** 目前沒辦法處理一個人在不同政黨有不同立場表態的狀況 ******/
+			Legislators[value.legislator] = {}
+			//throw new Error("沒有這個立委的資料："+Legislators[value.legislator]);
 		}
 
-		if(!Legislators[value.legislator].records)
+		if(!Legislators[value.legislator].records){
 			Legislators[value.legislator].records = [];
-		
-
+		}
+	
 		Legislators[value.legislator].records.push(value);
 
 	});
@@ -377,7 +377,10 @@ function parseToCandidatePosition (records, currentIssue) {// records: [], curre
         });
     
         Legislators[currentLegislator].dominantPosition = countSort[0].position;
-
+    
+        //如果最高票是 0 票，那就是沒有表態
+        if(countSort[0].count === 0)
+        	Legislators[currentLegislator].dominantPosition = "none";
 
 		/** 把 records 依照時間排序 */
 		Legislators[currentLegislator].records.sort((a,b)=>{
@@ -413,6 +416,11 @@ function parseToCandidatePosition (records, currentIssue) {// records: [], curre
 			CandidatePosition[currentLegislator] = {};
 			CandidatePosition[currentLegislator].name = currentLegislator;
 			CandidatePosition[currentLegislator].positions = {};
+
+			IssueList.map((issue, key)=>{
+				CandidatePosition[currentLegislator].positions[issue] = {};
+			})
+
 		}
 		
 		CandidatePosition[currentLegislator].positions[currentIssue] = Legislators[currentLegislator];
@@ -424,6 +432,27 @@ function parseToCandidatePosition (records, currentIssue) {// records: [], curre
   		if (err) return console.log(err);
   		console.log(clc.bgGreen('CandidatePosition is saved.'));
 	});
+}
+function parseToCandidatePosition (records, currentIssue) {// records: [], currentIssue: marriageEquality (e.g.)
+	var Legislators = {};
+	//initialize Legislators
+	fs.createReadStream('parseCandidate/data.csv')
+ 	  .pipe(csv())
+      .on('data', function(data) {
+	      let name = data['姓名'];
+	      Legislators[name] = {}
+	      Legislators[name].records = [];
+      })
+      .on('error', function (err)  { console.error('Error', err);})
+      .on('end', function () {
+      	  parseToCandidatePosition_Proceed(Legislators, records, currentIssue)
+
+
+
+
+      })
+  
+	
 
 
 }
