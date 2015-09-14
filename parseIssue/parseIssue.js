@@ -146,7 +146,11 @@ function parseToPartyView (records, currentIssue) {// records: [], currentIssue:
 
         Parties[currentParty].dominantPosition = countSort[0].position;
         Parties[currentParty].dominantPercentage = percentage;
-        
+
+
+        //贊成的 percent 數，用來排序
+        Parties[currentParty].rank = (count.aye || 0) / Parties[currentParty].records.length;
+        Parties[currentParty].party = currentParty;
 
 	});
 
@@ -155,19 +159,31 @@ function parseToPartyView (records, currentIssue) {// records: [], currentIssue:
 	//console.log(Parties);
 
 	
-	/* 最後依照時間排序之後塞到 PartyView['marriageEquality'].partyPositions 底下 */
-
+	/* 最後依「贊成 - 模糊 - 反對」排序 */
+	let sortedParty = [];
 	Object.keys(Parties).map((currentParty,index)=>{
+		sortedParty.push(Parties[currentParty]);
+	});
+	sortedParty.sort((a, b)=>{
+		return b.rank - a.rank;
+	});
+
+
+
+	// 之後塞到 PartyView['marriageEquality'].partyPositions 底下 */
+
+	sortedParty.map((currentParty,index)=>{
 
 		if(!PartyView[currentIssue].partyPositions)
 		 	PartyView[currentIssue].partyPositions = []; // initialize
 
 		PartyView[currentIssue].partyPositions.push(
 		{
-			"party" : currentParty,
-    	    "dominantPosition" : Parties[currentParty].dominantPosition, // 主要立場
-    	    "dominantPercentage" : Parties[currentParty].dominantPercentage,
-    	    "records" : Parties[currentParty].records
+			"party" : currentParty.party,
+    	    "dominantPosition" : currentParty.dominantPosition, // 主要立場
+    	    "dominantPercentage" : currentParty.dominantPercentage,
+    	    "records" : currentParty.records,
+    	    "rank" : currentParty.rank
 		});
 		
 	})
@@ -249,10 +265,11 @@ function parseToLegislatorView (records, currentIssue) {// records: [], currentI
 	// 再依照主要立場分人，算出最後的結果
 	let PositionGroup = {};
 
-	//順序固定是 反對 - 模糊 - 贊成
-	PositionGroup["nay"] = [];
-	PositionGroup["unknown"] = [];
+	
 	PositionGroup["aye"] = [];
+	PositionGroup["unknown"] = [];
+	PositionGroup["nay"] = [];
+	
 
 	Object.keys(Legislators).map((currentLegislator,index)=>{
 		let currentPosition = Legislators[currentLegislator].dominantPosition;
@@ -265,18 +282,21 @@ function parseToLegislatorView (records, currentIssue) {// records: [], currentI
 
 	//console.log(PositionGroup);
 	
-	/* 最後依照時間排序之後塞到 LegislatorView['marriageEquality'] 底下 */
-
-	Object.keys(PositionGroup).map((currentPosition,index)=>{
+	/* 最後依照 贊成 - 模糊 - 反對 順序塞到 LegislatorView['marriageEquality'] 底下 */
+	
+	["aye", "unknown", "nay"].map((currentPosition,index)=>{
 
 	    if(!LegislatorView[currentIssue].positions)
 		 	LegislatorView[currentIssue].positions = []; // initialize
 
-		LegislatorView[currentIssue].positions.push(
-		{
-			"position" : currentPosition,
-    	    "legislators" : PositionGroup[currentPosition]
-		});
+		if(PositionGroup[currentPosition].length > 0){
+			LegislatorView[currentIssue].positions.push(
+			{
+				"position" : currentPosition,
+    		    "legislators" : PositionGroup[currentPosition]
+			});
+		}
+		
 		
 	});
 
@@ -295,10 +315,10 @@ function parseToPositionView (records, currentIssue) {// records: [], currentIss
 	var Positions = {};
 
 	/* 把 表態 依照 立場 分組 */
-	//順序固定是 反對 - 模糊 - 贊成
-	Positions["nay"] = {};
-	Positions["unknown"] = {};
+	//順序固定是 贊成 - 模糊 - 反對
 	Positions["aye"] = {};
+	Positions["unknown"] = {};
+	Positions["nay"] = {};
 
 	Object.keys(Positions).map((key,index)=>{
 		Positions[key].position = key;
@@ -388,14 +408,17 @@ function parseToCandidatePosition_Proceed(Legislators, records, currentIssue){
 		});
 		
 		Legislators[currentLegislator].positionCounts = [];
+		
 		Legislators[currentLegislator].positionCounts.push({
 			"position" : "nay",
 			"count" : count.nay
 		})
+
 		Legislators[currentLegislator].positionCounts.push({
 			"position" : "unknown",
 			"count" : count.unknown
 		})
+		
 		Legislators[currentLegislator].positionCounts.push({
 			"position" : "aye",
 			"count" : count.aye
