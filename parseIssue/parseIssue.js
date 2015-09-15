@@ -657,8 +657,13 @@ fs.createReadStream('parseIssue/data.csv')
   	  
   	  });
 
+  	  //每一筆記錄用 object 的方式記錄
+  	  let Records = {};
+  	  PositionRecords.map((value,index)=>{
+  	  		Records[value.id] = value;
+  	  });
 
-  	  fs.writeFile('parseIssue/positionRecords.json', JSON.stringify(PositionRecords, null, 4), function (err) {
+  	  fs.writeFile('parseIssue/positionRecords.json', JSON.stringify(Records, null, 4), function (err) {
   		if (err) return console.log(err);
   		console.log(clc.bgGreen('position.json is saved.'));
 	  });
