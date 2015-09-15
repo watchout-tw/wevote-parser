@@ -579,7 +579,7 @@ function parseToPartyPosition (records, currentIssue) {// records: [], currentIs
 	Object.keys(Parties).map((currentParty,indx)=>{
 		if(!PartyPosition[currentParty]){
 			PartyPosition[currentParty] = {};
-			PartyPosition[currentParty].name = currentParty.name;
+			PartyPosition[currentParty].name = Parties[currentParty].name;
 			PartyPosition[currentParty].positions = {};
 
 			//初始化每個政黨，在每個議題的資料
