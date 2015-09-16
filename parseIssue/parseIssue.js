@@ -6,40 +6,49 @@ var moment = require('moment')
 
 const START_ID = 1;
 const IssueList = ['marriageEquality', 'recall'];
+const IssueMeta = [
+	{
+		"id" : "marriageEquality",
+		"title" : "婚姻平權",
+		"statement" : "婚姻不限性別"
+    },
+    {
+		"id" : "recall",
+		"title" : "罷免",
+		"statement" : "罷免門檻下修"
+    },
+    {
+		"id" : "referendum",
+		"title" : "公投",
+		"statement" : "公投門檻下修"
+    }
+]
+
+/* initialize all issues */
 
 var PartyView = {};
-
-////// Needs refactor /////
-/* initialize all issues */
-PartyView['marriageEquality'] = {};
-PartyView['marriageEquality'].title = "婚姻平權";
-PartyView['marriageEquality'].statement = "婚姻不限性別";
-PartyView['marriageEquality'].partyPositions = [];
-PartyView['recall'] = {};
-PartyView['recall'].title = "罷免";
-PartyView['recall'].statement = "罷免門檻下修";
-PartyView['recall'].partyPositions = [];
-
 var LegislatorView = {};
-LegislatorView['marriageEquality'] = {};
-LegislatorView['marriageEquality'].title = "婚姻平權";
-LegislatorView['marriageEquality'].statement = "婚姻不限性別";
-LegislatorView['marriageEquality'].partyPositions = [];
-LegislatorView['recall'] = {};
-LegislatorView['recall'].title = "罷免";
-LegislatorView['recall'].statement = "罷免門檻下修";
-LegislatorView['recall'].partyPositions = [];
-
-
 var PositionView = {};
-PositionView['marriageEquality'] = {};
-PositionView['marriageEquality'].title = "婚姻平權";
-PositionView['marriageEquality'].statement = "婚姻不限性別";
-PositionView['marriageEquality'].positions = [];
-PositionView['recall'] = {};
-PositionView['recall'].title = "罷免";
-PositionView['recall'].statement = "罷免門檻下修";
-PositionView['recall'].positions = [];
+IssueMeta.map((issue, index)=>{
+	PartyView[issue.id] = {
+		title: issue.title,
+		statement: issue.statement,
+		partyPositions: []
+	}
+	
+	LegislatorView[issue.id] = {
+		title: issue.title,
+		statement: issue.statement,
+		partyPositions: []
+	}
+	PositionView[issue.id] = {
+		title: issue.title,
+		statement: issue.statement,
+		positions: []
+	}
+});
+
+
 
 var CandidatePosition = {};
 var PartyPosition = {};
@@ -70,6 +79,8 @@ function cht_to_eng(cht){
 	    	return 'marriageEquality';
 	    case '罷免':
 	    	return 'recall';
+	    case '公投':
+	    	return 'referendum';
 		default: 
 			throw new Error("Oh-Oh-找不到這個詞的英文捏！<o> "+cht);
 
