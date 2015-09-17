@@ -5,7 +5,25 @@ var clc = require('cli-color')
 var moment = require('moment')
 
 const START_ID = 1;
-
+function yes_to_true(input){
+	try{
+	    switch(input){
+	    	
+	    	case '是':
+	    		return true;
+	    	case '否':
+	    		return false;
+	    	case '':
+	    		return "unknown";
+	    	default: 
+	    		throw new Error("無法判斷 true/flase =>"+input);
+    
+	    }
+	}catch(e){
+		console.log(clc.red(e));
+		process.exit(1);
+	}
+}
 function cht_to_eng(cht){
 	try{
 	switch(cht){
@@ -32,9 +50,11 @@ function cht_to_eng(cht){
 	}
 }
 
+
 var Legislators = {};
 var Name2ID = {};
 var currentID = START_ID;
+
 
 fs.createReadStream('parseLegislator/data.csv')
   .pipe(csv())
@@ -48,7 +68,11 @@ fs.createReadStream('parseLegislator/data.csv')
 	  	gender : data['性別'],
 	  	age : data['年齡'],
 	  	constituency1 : data['第八屆選區1'],
-	  	constituency2 : data['第八屆選區2']
+	  	constituency2 : data['第八屆選區2'],
+
+	  	isCandidate : yes_to_true(data['是否為第九屆候選人']),
+	  	candidateConstituency1 : data['第九屆選區1'],
+	  	candidateConstituency2 : data['第九屆選區2']
 	  }
 	  
 	  console.log(record);
