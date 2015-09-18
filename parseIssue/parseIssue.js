@@ -67,6 +67,8 @@ function cht_to_eng(cht){
 			return 'PFP';
 		case '民國黨':
 			return 'MKT';
+		case '無黨':
+			return 'NONE';
 		case '無黨籍':
 			return 'NONE';
 		case '贊成':
@@ -210,17 +212,49 @@ function parseToPartyView (records, currentIssue) {// records: [], currentIssue:
 }
 
 function parseToLegislatorView (records, currentIssue) {// records: [], currentIssue: marriageEquality (e.g.)
-	var Legislators = {};
+	let evadingLegislators = {};
 
-	/* 把 表態 依照 立委 分組 */
+	fs.createReadStream('parseIssue/evading.csv')
+  	  .pipe(csv())
+      .on('data', function(data) {
+	     
+	      let issue = data['議題名稱'];
 
-	// 先分出每個立委底下有哪些 record
+
+	      let legislator = data['立委名'];
+	      let party = cht_to_eng(data['當時的政黨']);
+
+	      if(cht_to_eng(issue) === currentIssue){
+	      		evadingLegislators[legislator] = {
+	      			name : legislator,
+	      			party : party
+	      		};
+	      }
+	     
+      })
+      .on('error', function (err)  { console.error('Error', err);})
+      .on('end',   function ()     { 
+
+          parseToLegislatorView_Proceed (evadingLegislators, records, currentIssue);
+        
+      });  
+
+	
+	
+}
+function parseToLegislatorView_Proceed (evadingLegislators, records, currentIssue) {// records: [], currentIssue: marriageEquality (e.g.)
+	
+    // evading_list 記錄了在這個議題上「應表態未表態」的立委名單，array
+
+    let Legislators = {};
+
+	// 分出每個立委底下有哪些 record
 	records.map((value, index)=>{
 		if(!Legislators[value.legislator]){
 			Legislators[value.legislator] = {};//empty object for one legislator
 			Legislators[value.legislator].name = value.legislator; //'丁守中'
 			Legislators[value.legislator].party = value.party; //KTM 
-			/***** 目前沒辦法處理一個人在不同政黨有不同立場表態的狀況 ******/
+			/***** 目前沒處理一個人在不同政黨有不同立場表態的狀況 ******/
 		}
 
 		if(!Legislators[value.legislator].records)
@@ -275,15 +309,29 @@ function parseToLegislatorView (records, currentIssue) {// records: [], currentI
 	});
 	//console.log(Legislators)
 
+	// 填寫應表態未表態的立委的 主要立場 & 比例
+	Object.keys(evadingLegislators).map((currentLegislator,indx)=>{
+		if(Legislators[currentLegislator]){
+			throw "<> 應表態未表態的立委，居然有資料？！";
+		}
+		evadingLegislators[currentLegislator].dominantPosition = "evading";
+        evadingLegislators[currentLegislator].dominantPercentage = 100;
+
+
+	});
+		
+
+
 	// 再依照主要立場分人，算出最後的結果
 	let PositionGroup = {};
 
-	
 	PositionGroup["aye"] = [];
 	PositionGroup["unknown"] = [];
 	PositionGroup["nay"] = [];
+	PositionGroup["evading"] = [];
 	
 
+    // 把有立場的好寶寶放進去
 	Object.keys(Legislators).map((currentLegislator,index)=>{
 		let currentPosition = Legislators[currentLegislator].dominantPosition;
 
@@ -293,11 +341,22 @@ function parseToLegislatorView (records, currentIssue) {// records: [], currentI
 		PositionGroup[currentPosition].push(Legislators[currentLegislator]);
 	});
 
+    //把沒立場的壞寶寶放進去
+	Object.keys(evadingLegislators).map((currentLegislator,index)=>{
+		let currentPosition = evadingLegislators[currentLegislator].dominantPosition;
+
+		if(!PositionGroup[currentPosition])
+			throw new Error("未定義的立場："+currentPosition);
+
+		PositionGroup[currentPosition].push(evadingLegislators[currentLegislator]);
+	});
+
+
 	//console.log(PositionGroup);
 	
-	/* 最後依照 贊成 - 模糊 - 反對 順序塞到 LegislatorView['marriageEquality'] 底下 */
+	/* 最後依照 贊成 - 模糊 - 反對 - 應表態未表態 順序塞到 LegislatorView['marriageEquality'] 底下 */
 	
-	["aye", "unknown", "nay"].map((currentPosition,index)=>{
+	["aye", "unknown", "nay", "evading"].map((currentPosition,index)=>{
 
 	    if(!LegislatorView[currentIssue].positions)
 		 	LegislatorView[currentIssue].positions = []; // initialize
@@ -312,6 +371,7 @@ function parseToLegislatorView (records, currentIssue) {// records: [], currentI
 		
 		
 	});
+	
 
 	console.log(LegislatorView)
 
@@ -323,7 +383,6 @@ function parseToLegislatorView (records, currentIssue) {// records: [], currentI
   		console.log(clc.bgGreen('LegislatorView is saved.'));
 	});
 }
-
 function parseToPositionView (records, currentIssue) {// records: [], currentIssue: marriageEquality (e.g.)
 	var Positions = {};
 
