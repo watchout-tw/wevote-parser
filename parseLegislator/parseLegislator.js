@@ -67,6 +67,7 @@ fs.createReadStream('parseLegislator/data.csv')
 	  	partyCht : data['政黨'],
 	  	gender : data['性別'],
 	  	age : data['年齡'],
+	  	isCurrent : yes_to_true(data['是否為第八屆立委']),
 	  	constituency1 : data['第八屆選區1'],
 	  	constituency2 : data['第八屆選區2'],
 
