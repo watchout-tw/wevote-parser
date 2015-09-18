@@ -50,7 +50,7 @@ IssueMeta.map((issue, index)=>{
 
 
 
-var CandidatePosition = {};
+var LegislatorPosition = {};
 var PartyPosition = {};
 
 
@@ -359,7 +359,7 @@ function parseToPositionView (records, currentIssue) {// records: [], currentIss
   		console.log(clc.bgGreen('PositionView is saved.'));
 	});
 }
-function parseToCandidatePosition_Proceed(Legislators, records, currentIssue){
+function parseToLegislatorPosition_Proceed(Legislators, records, currentIssue){
 	console.log(Legislators)
 	/* 把 表態 依照 立委 分組 */
    
@@ -448,31 +448,31 @@ function parseToCandidatePosition_Proceed(Legislators, records, currentIssue){
 	/* 這裡得到每個立委在這個議題的立場，存到 LegislatorView 裡面 */
 	/*******************************************************/
 	Object.keys(Legislators).map((currentLegislator,indx)=>{
-		if(!CandidatePosition[currentLegislator]){
-			CandidatePosition[currentLegislator] = {};
-			CandidatePosition[currentLegislator].name = currentLegislator;
-			CandidatePosition[currentLegislator].positions = {};
+		if(!LegislatorPosition[currentLegislator]){
+			LegislatorPosition[currentLegislator] = {};
+			LegislatorPosition[currentLegislator].name = currentLegislator;
+			LegislatorPosition[currentLegislator].positions = {};
 
 			IssueList.map((issue, key)=>{
-				CandidatePosition[currentLegislator].positions[issue] = {};
+				LegislatorPosition[currentLegislator].positions[issue] = {};
 			})
 
 		}
 		
-		CandidatePosition[currentLegislator].positions[currentIssue] = Legislators[currentLegislator];
+		LegislatorPosition[currentLegislator].positions[currentIssue] = Legislators[currentLegislator];
 
 	});
 	
 
-	fs.writeFile('parseIssue/candidatePosition.json', JSON.stringify(CandidatePosition, null, 4), function (err) {
+	fs.writeFile('parseIssue/legislatorPosition.json', JSON.stringify(LegislatorPosition, null, 4), function (err) {
   		if (err) return console.log(err);
-  		console.log(clc.bgGreen('CandidatePosition is saved.'));
+  		console.log(clc.bgGreen('lPosition is saved.'));
 	});
 }
-function parseToCandidatePosition (records, currentIssue) {// records: [], currentIssue: marriageEquality (e.g.)
+function parseToLegislatorPosition (records, currentIssue) {// records: [], currentIssue: marriageEquality (e.g.)
 	var Legislators = {};
 	//initialize Legislators
-	fs.createReadStream('parseCandidate/data.csv')
+	fs.createReadStream('parseLegislator/data.csv')
  	  .pipe(csv())
       .on('data', function(data) {
 	      let name = data['姓名'];
@@ -481,7 +481,7 @@ function parseToCandidatePosition (records, currentIssue) {// records: [], curre
       })
       .on('error', function (err)  { console.error('Error', err);})
       .on('end', function () {
-      	  parseToCandidatePosition_Proceed(Legislators, records, currentIssue)
+      	  parseToLegislatorPosition_Proceed(Legislators, records, currentIssue)
 
       })
 }
@@ -663,7 +663,7 @@ fs.createReadStream('parseIssue/data.csv')
 			parseToPositionView(PositionRecords_Issue[issue], issue);
 
 			//
-			parseToCandidatePosition(PositionRecords_Issue[issue], issue);
+			parseToLegislatorPosition(PositionRecords_Issue[issue], issue);
 			parseToPartyPosition(PositionRecords_Issue[issue], issue);
   	  
   	  });
