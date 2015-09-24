@@ -21,6 +21,11 @@ const IssueMeta = [
 		"id" : "referendum",
 		"title" : "公投",
 		"statement" : "公投門檻下修"
+    },
+    {
+		"id" : "nuclearPower",
+		"title" : "核四",
+		"statement" : "核四停建"
     }
 ]
 
@@ -67,6 +72,8 @@ function cht_to_eng(cht){
 			return 'PFP';
 		case '民國黨':
 			return 'MKT';
+		case '無黨團結聯盟':
+		 	return 'NSU';
 		case '無黨':
 			return 'NONE';
 		case '無黨籍':
@@ -83,6 +90,8 @@ function cht_to_eng(cht){
 	    	return 'recall';
 	    case '公投':
 	    	return 'referendum';
+	    case '核四':
+	    	return 'nuclearPower';
 		default: 
 			throw new Error("Oh-Oh-找不到這個詞的英文捏！<o> "+cht);
 
@@ -558,11 +567,20 @@ function parseToPartyPosition (records, currentIssue) {// records: [], currentIs
 		},
 		{   
 			"id": "TSU",
-			"name":'台灣團結聯盟'}
+			"name":'台灣團結聯盟'
+		}
 		,
 		{
 			"id": "PFP",
 			"name":'親民黨'
+		},
+		{
+			"id": "NSU",
+			"name":'無黨團結聯盟'
+		},
+		{
+			"id": "NONE",
+			"name":'無黨籍'
 		}
 	];
 	partyOrders.map((value, index)=>{
