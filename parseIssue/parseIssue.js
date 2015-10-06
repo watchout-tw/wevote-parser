@@ -347,7 +347,7 @@ function parseToLegislatorView_Proceed (evadingLegislators, records, currentIssu
 
 	fs.writeFile('parseIssue/legislatorView.json', JSON.stringify(LegislatorView, null, 4), function (err) {
   		if (err) return console.log(err);
-  		console.log(clc.bgGreen('LegislatorView is saved.'));
+  		console.log(clc.bgGreen('legislatorView is saved.'));
 	});
 }
 function parseToPositionView (records, currentIssue) {// records: [], currentIssue: marriageEquality (e.g.)
@@ -382,7 +382,7 @@ function parseToPositionView (records, currentIssue) {// records: [], currentIss
 
 	fs.writeFile('parseIssue/positionView.json', JSON.stringify(PositionView, null, 4), function (err) {
   		if (err) return console.log(err);
-  		console.log(clc.bgGreen('PositionView is saved.'));
+  		console.log(clc.bgGreen('positionView is saved.'));
 	});
 }
 function parseToLegislatorPosition_Proceed(Legislators, records, currentIssue, evadingList){
@@ -502,7 +502,7 @@ function parseToLegislatorPosition_Proceed(Legislators, records, currentIssue, e
 
 	fs.writeFile('parseIssue/legislatorPosition.json', JSON.stringify(LegislatorPosition, null, 4), function (err) {
   		if (err) return console.log(err);
-  		console.log(clc.bgGreen('lPosition is saved.'));
+  		console.log(clc.bgGreen('legislatorPosition is saved.'));
 	});
 }
 function parseToLegislatorPosition (records, currentIssue) {// records: [], currentIssue: marriageEquality (e.g.)
@@ -746,9 +746,9 @@ fs.createReadStream('parseIssue/data.csv')
   	  		Records[value.id] = value;
   	  });
 
-  	  fs.writeFile('parseIssue/positionRecords.json', JSON.stringify(Records, null, 4), function (err) {
+  	  fs.writeFile('parseIssue/records.json', JSON.stringify(Records, null, 4), function (err) {
   		if (err) return console.log(err);
-  		console.log(clc.bgGreen('position.json is saved.'));
+  		console.log(clc.bgGreen('records.json is saved.'));
 	  });
   });  
 
