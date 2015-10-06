@@ -181,7 +181,7 @@ function parseToPartyView (records, currentIssue) {// records: [], currentIssue:
 function parseToLegislatorView (records, currentIssue) {// records: [], currentIssue: marriageEquality (e.g.)
 	let evadingLegislators = {};
 
-	fs.createReadStream('parseIssue/evading.csv')
+	fs.createReadStream('evading.csv')
   	  .pipe(csv())
       .on('data', function(data) {
 	     
@@ -385,7 +385,7 @@ function parseToPositionView (records, currentIssue) {// records: [], currentIss
   		console.log(clc.bgGreen('PositionView is saved.'));
 	});
 }
-function parseToLegislatorPosition_Proceed(Legislators, records, currentIssue){
+function parseToLegislatorPosition_Proceed(Legislators, records, currentIssue, evadingList){
 	console.log(Legislators)
 	/* 把 表態 依照 立委 分組 */
    
@@ -437,9 +437,19 @@ function parseToLegislatorPosition_Proceed(Legislators, records, currentIssue){
     
         Legislators[currentLegislator].dominantPosition = countSort[0].position;
     
-        //如果最高票是 0 票，那就是沒有表態
-        if(countSort[0].count === 0)
+        //如果最高票是 0 票
+        if(countSort[0].count === 0){
+        	//沒有表態
         	Legislators[currentLegislator].dominantPosition = "none";
+        	//應表態未表態
+        	if(evadingList[currentLegislator]){
+        	    if(evadingList[currentLegislator][currentIssue]){
+        	    	if(evadingList[currentLegislator][currentIssue]===true){
+        	    		Legislators[currentLegislator].dominantPosition = "evading";
+        	    	}
+        	    }
+            }
+        }
 
 		/** 把 records 依照時間排序 */
 		Legislators[currentLegislator].records.sort((a,b)=>{
@@ -497,6 +507,7 @@ function parseToLegislatorPosition_Proceed(Legislators, records, currentIssue){
 }
 function parseToLegislatorPosition (records, currentIssue) {// records: [], currentIssue: marriageEquality (e.g.)
 	var Legislators = {};
+	var evadingList = {};
 	//initialize Legislators
 	fs.createReadStream('parseLegislator/data.csv')
  	  .pipe(csv())
@@ -507,7 +518,33 @@ function parseToLegislatorPosition (records, currentIssue) {// records: [], curr
       })
       .on('error', function (err)  { console.error('Error', err);})
       .on('end', function () {
-      	  parseToLegislatorPosition_Proceed(Legislators, records, currentIssue)
+      	 
+
+      	    fs.createReadStream('evading.csv')
+  	  	  	  .pipe(csv())
+      	  	  .on('data', function(data) {
+	       
+	              var record = {
+	              	issue : data['議題名稱'],
+	              	legislator : data['立委名'],
+	              	party : cht2eng(data['當時的政黨'])
+	              }
+	              
+	              if(!evadingList[record.legislator]){
+	              	  evadingList[record.legislator] = {};
+	              }
+	              var issueEng = cht2eng(record.issue);
+           
+	              evadingList[record.legislator][issueEng] = true;
+	       
+              })
+              .on('error', function (err)  { console.error('Error', err);})
+              .on('end',   function ()     { 
+      	          
+      	          parseToLegislatorPosition_Proceed(Legislators, records, currentIssue, evadingList)
+                  
+                
+              });  
 
       })
 }

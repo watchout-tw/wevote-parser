@@ -14,7 +14,7 @@ $ npm install
 
 `資料表 > 人的基本資料` 這個 tab ，下載成 .csv 檔，放到 `/parseLegislator/data.csv`.
 
-`資料表 > 應表態未表態` 這個 tab ，下載成 .csv 檔，放到 `/parseEvading/data.csv`.
+`資料表 > 應表態未表態` 這個 tab ，下載成 .csv 檔，放到 `/evading.csv`.
 
 
 
@@ -34,8 +34,3 @@ npm run parseL
 
 人的相關資料會存到 /parseLegislator 底下（.json）
 
-#### 3.處理應表態未表態
-
-npm run parseE
-
-人的相關資料會存到 /parseEvading 底下（.json）
