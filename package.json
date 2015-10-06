@@ -4,8 +4,9 @@
   "description": "",
   "main": "parse.js",
   "scripts": {
-    "start" : "babel-node parseLegislator/parseLegislator",
-    "parseIssue" : "babel-node parseIssue/parseIssue",
+    "parseI" : "babel-node parseIssue/parseIssue",
+    "parseP" : "babel-node parseLegislator/parseLegislator",
+    "parseE" : "babel-node parseEvading/parseEvading",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "soidid <soidid@gmail.com>",
