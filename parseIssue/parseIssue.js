@@ -11,7 +11,7 @@ const IssueMeta = [
 	{
 		"id" : "marriageEquality",
 		"title" : "婚姻平權",
-		"statement" : "婚姻不限性別"
+		"statement" : "同性婚姻合法化"
     },
     {
 		"id" : "recall",
