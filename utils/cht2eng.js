@@ -1,3 +1,4 @@
+var clc = require('cli-color')
 export default function cht_to_eng(cht){
 try{
 	switch(cht){
@@ -29,7 +30,7 @@ try{
 	    	return 'recall';
 	    case '公投':
 	    	return 'referendum';
-	    case '核四':
+	    case '核能':
 	    	return 'nuclearPower';
 		default: 
 			throw new Error("Oh-Oh-找不到這個詞的英文捏！<o> "+cht);
