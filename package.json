@@ -6,7 +6,7 @@
   "scripts": {
     "parseI" : "babel-node parseIssue/parseIssue",
     "parseP" : "babel-node parseLegislator/parseLegislator",
-    "parseE" : "babel-node parseEvading/parseEvading",
+    "parseE" : "babel-node parseEvading",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "soidid <soidid@gmail.com>",
