@@ -88,12 +88,12 @@ fs.createReadStream('parseLegislator/data.csv')
   	  
 
 
-  	  fs.writeFile('parseLegislator/legislators.json', JSON.stringify(Legislators, null, 4), function (err) {
+  	  fs.writeFile('./results/legislators.json', JSON.stringify(Legislators, null, 4), function (err) {
   		if (err) return console.log(err);
   		console.log(clc.bgGreen('legislators.json is saved.'));
 	  });
 	  
-	  fs.writeFile('parseLegislator/name2id.json', JSON.stringify(Name2ID, null, 4), function (err) {
+	  fs.writeFile('./results/name2id.json', JSON.stringify(Name2ID, null, 4), function (err) {
   		if (err) return console.log(err);
   		console.log(clc.bgGreen('name2id.json is saved.'));
 	  });

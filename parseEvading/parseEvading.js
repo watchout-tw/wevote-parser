@@ -2,12 +2,12 @@
 var fs = require('fs')
 var csv = require('csv-parser')
 var clc = require('cli-color')
-var cht2eng = require('./utils/cht2eng');
+var cht2eng = require('../utils/cht2eng');
 let evadingLegislators = {};
 
 	
     console.log("evadingLegislators")
-	fs.createReadStream('./evading.csv')
+	fs.createReadStream('./parseEvading/evading.csv')
   	  .pipe(csv())
       .on('data', function(data) {
 	     
@@ -29,7 +29,7 @@ let evadingLegislators = {};
       .on('error', function (err)  { console.error('Error', err);})
       .on('end',   function ()     { 
       	  console.log("END")
-          fs.writeFile('evadingLegislators.json', JSON.stringify(evadingLegislators, null, 4), function (err) {
+          fs.writeFile('./results/evadingLegislators.json', JSON.stringify(evadingLegislators, null, 4), function (err) {
   			if (err) return console.log(err);
   			
   			console.log(clc.bgGreen('evadingLegislators is saved.'));
