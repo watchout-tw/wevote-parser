@@ -39,7 +39,7 @@ fs.createReadStream('parseIssue/data.csv')
 	  	positionJudgement : data['立場判斷'],
 	  	position : cht2eng(data['立場統計分類']),
 	  	clarificationContent : data['立委澄清說明'],
-	  	clarificationLastUpdate : data['澄清說明最後更新時間'],
+	  	clarificationLastUpdate : format_date_to_unix_milliseconds(data['澄清說明最後更新時間']),
 	  	lyURL : data['原始來源記錄url （立法院）'],
 	  	meeting : data['會議別'],
 	  	meetingCategory : data['會議分類']
