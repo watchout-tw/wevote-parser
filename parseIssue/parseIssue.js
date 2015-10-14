@@ -28,6 +28,11 @@ fs.createReadStream('parseIssue/data.csv')
   .pipe(csv())
   .on('data', function(data) {
 	  //console.log('row', data['議題名稱'])
+
+	  let clarificationLastUpdate = "";
+	  if(data['澄清說明最後更新時間']){
+	  	clarificationLastUpdate = format_date_to_unix_milliseconds(data['澄清說明最後更新時間'])
+	  }
 	  var record = {
 	  	id : currentID,
 	  	issue : data['議題名稱'],
@@ -39,7 +44,7 @@ fs.createReadStream('parseIssue/data.csv')
 	  	positionJudgement : data['立場判斷'],
 	  	position : cht2eng(data['立場統計分類']),
 	  	clarificationContent : data['立委澄清說明'],
-	  	clarificationLastUpdate : format_date_to_unix_milliseconds(data['澄清說明最後更新時間']),
+	  	clarificationLastUpdate : clarificationLastUpdate,
 	  	lyURL : data['原始來源記錄url （立法院）'],
 	  	otherSourceTitle : data['其他來源名稱'],
 	  	otherSourceURL: data['來源url'],
