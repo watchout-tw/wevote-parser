@@ -36,11 +36,28 @@ fs.createReadStream('parseLegislator/data.csv')
   .pipe(csv())
   .on('data', function(data) {
 	  //console.log('row', data['議題名稱'])
+
+	  var representParty1 = {
+	  	partyCht : data['代表政黨1'],
+	  	startDate : data['到職時間1'],
+	  	endDate : data['離職時間1'],
+	  }
+	  var representParty2 = {
+	  	partyCht : data['代表政黨2'],
+	  	startDate : data['到職時間2'],
+	  	endDate : data['離職時間2'],
+	  }
+	  var parties = [representParty1];
+	  if(representParty2.partyCht){
+	  	parties.push(representParty2);
+	  }
+
 	  var record = {
 	  	id : currentID,
 	  	name : data['姓名'],
-	  	party : cht2eng(data['政黨']),
-	  	partyCht : data['政黨'],
+	  	
+	  	parties : parties,
+
 	  	gender : data['性別'],
 	  	age : data['年齡'],
 	  	isCurrent : yes_to_true(data['是否為第八屆立委']),

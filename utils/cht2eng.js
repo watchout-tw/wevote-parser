@@ -36,6 +36,7 @@ try{
 	    	return 'referendum';
 	    case '核能':
 	    	return 'nuclearPower';
+	   
 		default: 
 			throw new Error("Oh-Oh-找不到這個詞的英文捏！<o> "+cht);
 
