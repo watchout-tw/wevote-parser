@@ -12,22 +12,44 @@ try{
 			return 'DPP';
 		case '台聯':
 			return 'TSU';
+		case '台灣團結聯盟':
+			return 'TSU';
 		case '親民黨':
 			return 'PFP';
 		case '民國黨':
 			return 'MKT';
 		case '無黨團結聯盟':
 		 	return 'NSU';
+		case '時代力量':
+			return 'NPP';
+		case '綠黨社會民主黨聯盟':
+			return 'GSD';
+		case '新黨':
+			return 'NP';
+		case '軍公教聯盟黨':
+			return 'MCFAP';
+		case '樹黨':
+			return 'TP';
+		case '台灣獨立黨':
+			return 'TIP';
+		case '信心希望聯盟':
+			return 'FHL';
+		case '中華民國機車黨':
+			return 'MPR'
+		case '自由台灣黨':
+			return 'FTP'
 		case '無黨':
 			return 'NONE';
 		case '無黨籍':
 			return 'NONE';
+
 		case '贊成':
 	    	return 'aye';
 	    case '反對':
 	    	return 'nay';
 	    case '模糊':
 	    	return 'unknown';
+
 	    case '婚姻平權':
 	    	return 'marriageEquality';
 	    case '罷免':
@@ -38,7 +60,7 @@ try{
 	    	return 'nuclearPower';
 	   
 		default: 
-			throw new Error("Oh-Oh-找不到這個詞的英文捏！<o> "+cht);
+			throw new Error("找不到這個詞的英文:"+cht);
 
 	}
 }catch(e){

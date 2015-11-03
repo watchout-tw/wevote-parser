@@ -6,7 +6,10 @@
   "scripts": {
     "start" : "npm run parseI && npm run parseP && npm run parseE",
     "parseI" : "babel-node parseIssue/parseIssue",
-    "parseP" : "babel-node parseLegislator/parseLegislator",
+    "parseL" : "babel-node parsePeople/parseLegislator",
+    "parseID" : "babel-node parsePeople/parsePeopleId",
+    "parseD" : "babel-node parsePeople/parseEleDistrict",
+    "parseC" : "babel-node parsePeople/parseCandidate",
     "parseE" : "babel-node parseEvading/parseEvading",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

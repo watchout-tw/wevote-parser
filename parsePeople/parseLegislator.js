@@ -26,13 +26,10 @@ function yes_to_true(input){
 	}
 }
 
-
 var Legislators = {};
-var Name2ID = {};
 var currentID = START_ID;
 
-
-fs.createReadStream('parseLegislator/data.csv')
+fs.createReadStream('parsePeople/legislatorData.csv')
   .pipe(csv())
   .on('data', function(data) {
 	  //console.log('row', data['議題名稱'])
@@ -73,24 +70,18 @@ fs.createReadStream('parseLegislator/data.csv')
 	  console.log(record);
 	  
 	  Legislators[currentID] = record;
-	  Name2ID[record.name] = currentID;
 
 	  currentID++;
   })
   .on('error', function (err)  { console.error('Error', err);})
   .on('end',   function ()     { 
-  	  
-
-
+  	 
   	  fs.writeFile('./results/legislators.json', JSON.stringify(Legislators, null, 4), function (err) {
   		if (err) return console.log(err);
   		console.log(clc.bgGreen('legislators.json is saved.'));
 	  });
 	  
-	  fs.writeFile('./results/name2id.json', JSON.stringify(Name2ID, null, 4), function (err) {
-  		if (err) return console.log(err);
-  		console.log(clc.bgGreen('name2id.json is saved.'));
-	  });
+	 
 	  
   });  
 
