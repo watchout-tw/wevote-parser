@@ -49,6 +49,13 @@ try{
 	    	return 'nay';
 	    case '模糊':
 	    	return 'unknown';
+	    case '沒資料':
+	    	return 'none';
+
+	    case '公開透明':
+	    	return 'transparent';
+	    case '黑箱':
+	    	return 'blackbox';
 
 	    case '婚姻平權':
 	    	return 'marriageEquality';
