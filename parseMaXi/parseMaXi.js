@@ -82,6 +82,7 @@ function calculatePosition(records){
 
 		if(!Legislators[legName]){
 			Legislators[legName] = {};
+            Legislators[legName].name = legName;
 			Legislators[legName].party = record.party;
 			Legislators[legName].records = [];
 		}
