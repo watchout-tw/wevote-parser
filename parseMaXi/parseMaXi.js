@@ -14,11 +14,16 @@ fs.createReadStream('parseMaXi/data.csv')
 	  if(data['澄清說明最後更新時間']){
 	  	clarificationLastUpdate = date2milliseconds(data['澄清說明最後更新時間'])
 	  }
-
+      let legislator = data['立委名'];
+      
+      if(legislator==="鄭天財"){
+        legislator = "鄭天財Sra·Kacaw";
+      }
+      
 	  var record = {
 	  	
 	  	date : date2milliseconds(data['發言日期']),
-	  	legislator : data['立委名'],
+	  	legislator : legislator,
 	  	party : cht2eng(data['當時的政黨']),
 	  	meeting : data['會議'],
 	  	
