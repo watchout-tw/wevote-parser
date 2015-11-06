@@ -50,14 +50,14 @@ fs.createReadStream('parseMaXi/data.csv')
   	
   });  
 function maximumClubReview(countSort, ayePos, nayPos) {
-	let maxCount = countSort[0].count;
+	  let maxCount = countSort[0].count;
     let maximumClub = [];
     countSort.map((value,index)=>{
         if(value.count === maxCount){
             maximumClub.push(value.position);
         }
     })
-
+    
     if(maximumClub.size > 1){
         
         let hasAye = (maximumClub.indexOf(ayePos) !== -1);
@@ -97,22 +97,18 @@ function calculatePosition(records){
 	//再計算每個立委的主要立場: 馬習會 & 程序
     Object.keys(Legislators).map((currentLegislator,indx)=>{
         
-        let countMaXi = {
-        	aye: 0,
-        	nay: 0,
-        	unknown: 0,
-        	none: 0
-        }; 
-        let countProcedure = {
-        	transparent: 0,
-        	blackbox: 0,
-        	unknown: 0,
-        	none: 0
-        }; 
-
+        let countMaXi = {};
+        let countProcedure = {};
 
         Legislators[currentLegislator].records.map((record,k)=>{
-            countMaXi[record.supportMaXiMeetn]++;
+            if(!countMaXi[record.supportMaXiMeet]){
+              countMaXi[record.supportMaXiMeet] = 0;
+            }
+            countMaXi[record.supportMaXiMeet]++;
+
+            if(!countProcedure[record.positionOnProcedure]){
+              countProcedure[record.positionOnProcedure] = 0;
+            }
             countProcedure[record.positionOnProcedure]++;
 
         })
@@ -150,7 +146,7 @@ function calculatePosition(records){
             如果有模糊 + 反對，就算反對
             如果贊成反對同時都有，就算模糊
         */
-
+        
         Legislators[currentLegislator].supportMaXiMeet = maximumClubReview(countMaXiSort, "aye", "nay");
         Legislators[currentLegislator].positionOnProcedure  = maximumClubReview(countProcedureSort, "transparent", "blackbox");
         
