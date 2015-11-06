@@ -28,7 +28,7 @@ fs.createReadStream('parseMaXi/data.csv')
 	  	meeting : data['會議'],
 	  	
 	  	content : data['發言'],
-	  	sourceURL : data['原始來源記錄url （立法院）'],
+	  	sourceURL : data['url來源'],
 
 	  	supportMaXiMeet : cht2eng(data['支持馬習會？']),
 	  	positionOnProcedure : cht2eng(data['程序公開透明？']),
