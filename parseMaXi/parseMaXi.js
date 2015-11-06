@@ -50,20 +50,24 @@ fs.createReadStream('parseMaXi/data.csv')
   	
   });  
 function maximumClubReview(countSort, ayePos, nayPos) {
-	  let maxCount = countSort[0].count;
+	  
+    let maxCount = countSort[0].count;
     let maximumClub = [];
     countSort.map((value,index)=>{
         if(value.count === maxCount){
             maximumClub.push(value.position);
         }
     })
+
     
-    if(maximumClub.size > 1){
+    if(maximumClub.length > 1){
         
         let hasAye = (maximumClub.indexOf(ayePos) !== -1);
         let hasNay = (maximumClub.indexOf(nayPos) !== -1);
-        let hasUnknown = (maximumClub.indexOf("unknown") !== -1);
-
+        let hasUnknown = (maximumClub.indexOf("unknown") !== -1) || (maximumClub.indexOf("none") !== -1);
+        console.log(hasAye)
+        console.log(hasNay)
+        console.log(hasUnknown)
         if(hasAye && !hasNay && hasUnknown){
             return ayePos;
         }
@@ -146,6 +150,8 @@ function calculatePosition(records){
             如果有模糊 + 反對，就算反對
             如果贊成反對同時都有，就算模糊
         */
+        console.log("-----")
+        console.log(currentLegislator)
         
         Legislators[currentLegislator].supportMaXiMeet = maximumClubReview(countMaXiSort, "aye", "nay");
         Legislators[currentLegislator].positionOnProcedure  = maximumClubReview(countProcedureSort, "transparent", "blackbox");
