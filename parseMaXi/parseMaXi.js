@@ -160,8 +160,22 @@ function calculatePosition(records){
         });
     });
 
+    //依照表態次序多寡排序
+    let LegislatorsFinal = {};
 
-    fs.writeFile('./results/MaXiRecords.json', JSON.stringify(Legislators, null, 4), function (err) {
+    let LegislatorsArray = [];
+    Object.keys(Legislators).map((legName, index)=>{
+      LegislatorsArray.push(Legislators[legName])
+    })
+    LegislatorsArray.sort((a,b)=>{
+      return b.records.length - a.records.length;
+    })
+    LegislatorsArray.map((v,i)=>{
+      LegislatorsFinal[v.name] = v;
+    })
+
+
+    fs.writeFile('./results/MaXiRecords.json', JSON.stringify(LegislatorsFinal, null, 4), function (err) {
   		if (err) return console.log(err);
   		console.log(clc.bgGreen('MaXiRecords.json is saved.'));
 	});

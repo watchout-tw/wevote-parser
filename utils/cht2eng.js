@@ -51,6 +51,8 @@ try{
 	    	return 'unknown';
 	    case '沒資料':
 	    	return 'none';
+	    case '？':
+	    	return 'none';
 
 	    case '公開透明':
 	    	return 'transparent';
