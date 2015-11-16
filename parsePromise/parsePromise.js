@@ -18,11 +18,11 @@ fs.createReadStream('parsePromise/partyData.csv')
   .on('data', function(data) {
 	  //console.log('row', data['議題名稱'])
 
-      var title = data['政黨'];
-      var partyEng = cht2eng(title);
+      var name = data['政黨'];
+      var partyEng = cht2eng(name);
 
       Party[partyEng] = {
-        title : title,
+        name : name,
         id: partyEng,
         positions : {
             marriageEquality : {
