@@ -9,7 +9,7 @@ function handlePosition(pos){
   if(pos){
     return cht2eng(pos)
   }else{
-    return pos
+    return "none"
   }
   // because cht2eng doesn't handle ""
 }
