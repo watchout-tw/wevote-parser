@@ -12,7 +12,10 @@ fs.createReadStream('parsePeople/name2id.csv')
   .on('data', function(data) {
 	  //console.log('row', data['議題名稱'])
 
-      var name = data['姓名'];
+    var name = data['姓名'];
+    if(Name2ID[name]){
+      throw "duplicated!"+name
+    }
 	  Name2ID[name] = currentID;
 	  currentID++;
   })
