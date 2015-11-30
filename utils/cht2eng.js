@@ -34,10 +34,18 @@ try{
 			return 'TIP';
 		case '信心希望聯盟':
 			return 'FHL';
+		case '和平鴿聯盟黨':
+			return 'PPU';
 		case '中華民國機車黨':
-			return 'MPR'
+			return 'MPR';
 		case '自由台灣黨':
-			return 'FTP'
+			return 'FTP';
+		case '大愛憲改聯盟':
+            return 'DASG';
+        case '中華統一促進黨':
+            return 'CHTY';
+        case '健保免費連線':
+            return 'NHSA';
 		case '無黨':
 			return 'NONE';
 		case '無黨籍':
