@@ -14,6 +14,7 @@
     "parseMaXi" : "babel-node parseMaXi/parseMaXi",
     "parsePromise" : "babel-node parsePromise/parsePromise",
     "parsePartyBlock" : "babel-node parsePartyBlock/parsePartyBlock",
+    "parsePartyOrder" : "babel-node parsePartyOrder/parsePartyOrder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "soidid <soidid@gmail.com>",

@@ -3,6 +3,8 @@ var fs = require('fs'),
     clc = require('cli-color'),
     cht2eng = require('../utils/cht2eng');
 
+var partyOrder = require('../results/partyOrder.json');
+
 var Party = {}
 
 function handlePosition(pos){
@@ -72,8 +74,12 @@ fs.createReadStream('parsePromise/partyData.csv')
   })
   .on('error', function (err)  { console.error('Error', err);})
   .on('end',   function ()     { 
-  	
-	  fs.writeFile('./results/partyPromises.json', JSON.stringify(Party, null, 4), function (err) {
+  	//最後的結果依照順序
+    var OrderedParty = {};
+    partyOrder.map((partyId, i)=>{
+      OrderedParty[partyId] = Party[partyId];
+    })
+	  fs.writeFile('./results/partyPromises.json', JSON.stringify(OrderedParty, null, 4), function (err) {
   		if (err) return console.log(err);
   		console.log(clc.bgGreen('partyPromises.json is saved.'));
 	  });

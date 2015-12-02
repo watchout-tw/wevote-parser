@@ -3,6 +3,8 @@ var csv = require('csv-parser')
 var clc = require('cli-color')
 var cht2eng = require('../utils/cht2eng');
 
+var partyOrder = require('../results/partyOrder.json');
+
 var PartyBlock = {};
 fs.createReadStream('parsePartyBlock/data.csv')
   .pipe(csv())
@@ -26,8 +28,13 @@ fs.createReadStream('parsePartyBlock/data.csv')
   })
   .on('error', function (err)  { console.error('Error', err);})
   .on('end',   function ()     { 
+    //最後的結果依照順序
+    var OrderedParty = {};
+    partyOrder.map((partyId, i)=>{
+      OrderedParty[partyId] = PartyBlock[partyId];
+    })
   	
-	  fs.writeFile('./results/partyBlock.json', JSON.stringify(PartyBlock, null, 4), function (err) {
+	  fs.writeFile('./results/partyBlock.json', JSON.stringify(OrderedParty, null, 4), function (err) {
   		if (err) return console.log(err);
   		console.log(clc.bgGreen('partyBlock.json is saved.'));
 
