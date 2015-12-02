@@ -11,13 +11,17 @@ fs.createReadStream('parsePartyBlock/data.csv')
     var partyCht = data['政黨'];
     var partyEng = cht2eng(partyCht);
     var name = data['姓名'];
+    var tag = data['Tag'];
     if(!PartyBlock[partyEng]){
       PartyBlock[partyEng] = {};
       PartyBlock[partyEng].title = partyCht;
       PartyBlock[partyEng].id = partyEng;
       PartyBlock[partyEng].list = [];
     }
-    PartyBlock[partyEng].list.push(name)
+    PartyBlock[partyEng].list.push({
+      name: name,
+      info: tag
+    })
    
   })
   .on('error', function (err)  { console.error('Error', err);})
