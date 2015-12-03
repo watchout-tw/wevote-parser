@@ -7,6 +7,8 @@ var cht2eng = require('../utils/cht2eng');
 
 const START_ID = 1;
 function yes_to_true(input){
+	if(!input) return "";
+	
 	try{
 	    switch(input){
 	    	
@@ -61,7 +63,6 @@ fs.createReadStream('parsePeople/legislatorData.csv')
 	  	constituency1 : data['第八屆選區1'],
 	  	constituency2 : data['第八屆選區2'],
 
-	  	isCandidate : yes_to_true(data['是否為第九屆候選人']),
 	  	hasResigned : yes_to_true(data['已離職']),
 	  	candidateConstituency1 : data['第九屆選區1'],
 	  	candidateConstituency2 : data['第九屆選區2']
