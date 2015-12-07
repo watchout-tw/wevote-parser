@@ -36,7 +36,7 @@ fs.createReadStream('parseIssue/data.csv')
 	  var record = {
 	  	id : currentID,
 	  	issue : data['議題名稱'],
-	  	legislator : data['立委名'],
+	  	legislator : data['立委名'].trim(),
 	  	party : cht2eng(data['當時的政黨']),
 	  	date : format_date_to_unix_milliseconds(data['發言日期']),// try if we can sort this format?
 	  	category : data['分類'], // { 發言, 提案, 表決 }
