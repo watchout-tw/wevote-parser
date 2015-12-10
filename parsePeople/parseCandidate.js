@@ -7,7 +7,7 @@ var fs = require('fs'),
 
 var Name2ID = {};
 var District = {};
-var Facebook = {};
+var Contacts = {};
 
 var Candidates = {};
 
@@ -33,21 +33,28 @@ fs.createReadStream('results/name2id.json')
   		.on('error', function (err)  { console.error('Error', err);})
   		.on('end',   function ()     { 
   	  		
-          //3. 讀 FB 資料
-          loadFB();
+          //3. 讀聯絡資料
+          loadContact();
 	 	});
 	  
   });  
 
-function loadFB (argument) {
+function loadContact (argument) {
   fs.createReadStream('parsePeople/candidateFBData.csv')
       .pipe(csv())
       .on('data', function(data) {
-          Facebook[data['姓名']] = data['Facebook']; 
+          var name = data['姓名'];
+          var id = Name2ID[name];
+
+          if(data['Facebook']){
+              Contacts[id] = {
+                fb: data['Facebook']
+              }
+          }
       })
       .on('error', function (err)  { console.error('Error', err);})
       .on('end',   function ()     { 
-       
+        console.log(Contacts)
         //4. parse 候選人資料
         parseCandidate();    
     
@@ -102,6 +109,13 @@ function parseCandidate(){
   				}
 
           var hasReply = (data['婚姻平權-立場'] || data['婚姻平權-立場'] || data['罷免-立場'] || data['公投-立場'] || data['核能-立場']) ? true : false;
+          var contactAvaliable = false;
+          if(Contacts[id]){
+              contactAvaliable = true;
+          }
+
+          record.contactAvaliable = contactAvaliable;
+
           var positions = {
             marriageEquality : {
                 promise : {
