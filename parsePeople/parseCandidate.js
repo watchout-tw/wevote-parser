@@ -88,8 +88,9 @@ function parseCandidate(){
   				}
 
           /* 每個人都一定會有的資訊 */
-          record.name = name;
-          record.id = id;
+          record.id = id;//可以考慮不放
+          record.name = name;//可以考慮不放
+          
           record.party = party;
           record.districtArea = districtArea;
 

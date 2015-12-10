@@ -68,12 +68,8 @@ function parseLegislator (argument) {
 		  	name : name,
 		  	parties : parties,
 		  	constituency1 : constituency1,
+		  	constituency2 : constituency2,
 		  	hasResigned : yes_to_true(data['已離職'])
-		  }
-	
-		  /* 不一定每個人都有 */
-		  if(constituency2){
-		  	record.constituency2 = constituency2;
 		  }
 		  
 		  Legislators[id] = record;
