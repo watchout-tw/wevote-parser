@@ -40,7 +40,7 @@ fs.createReadStream('results/name2id.json')
   });  
 
 function loadFB (argument) {
-  fs.createReadStream('parsePeople/candidateData.csv')
+  fs.createReadStream('parsePeople/candidateFBData.csv')
       .pipe(csv())
       .on('data', function(data) {
           Facebook[data['姓名']] = data['Facebook']; 
@@ -76,11 +76,6 @@ function parseCandidate(){
   				var districtArea = District[data['縣市']];
   				var districtNo = data['選區'];
 
-          var age;
-          if(Number(data['出生西元年'])){ 
-              age = 2015 - Number(data['出生西元年']); 
-          }
-
           /* 沒有重要的資訊，跳出警告 */
   				if(!id){
   					  throw new Error("No ID found, name:"+name);
@@ -105,16 +100,6 @@ function parseCandidate(){
   					 record.districtNo = districtNo
   				}
 
-          //年齡
-          if(age){
-             record.age = age;
-          }
-
-          //臉書
-          if(Facebook[name]){
-             record.fb = Facebook[name];
-          }
-	  			
 	  			//console.log(record);
 	  			
 	  			Candidates[id] = record;
@@ -123,8 +108,8 @@ function parseCandidate(){
  		  .on('end',   function ()     { 
  			 
  			  fs.writeFile('./results/candidates.json', JSON.stringify(Candidates, null, 4), function (err) {
- 				if (err) return console.log(err);
- 				console.log(clc.bgGreen('candidates.json is saved.'));
+ 				   if (err) return console.log(err);
+ 				   console.log(clc.bgGreen('candidates.json is saved.'));
 	  		});
 	  
  		});  

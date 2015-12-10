@@ -6,10 +6,15 @@
   "scripts": {
     "start" : "npm run parseI && npm run parseP && npm run parseE",
     "parseI" : "babel-node parseIssue/parseIssue",
+
+    "updatePeople" : "npm run parseID && npm run parseL  && npm run parseC  && npm run parseP",
+
     "parseL" : "babel-node parsePeople/parseLegislator",
-    "parseID" : "babel-node parsePeople/parsePeopleId",
-    "parseD" : "babel-node parsePeople/parseEleDistrict",
     "parseC" : "babel-node parsePeople/parseCandidate",
+    "parseP" : "babel-node parsePeople/parsePeople",
+    "parseID" : "babel-node parsePeople/parsePeopleId",
+    
+    "parseD" : "babel-node parsePeople/parseEleDistrict",
     "parseE" : "babel-node parseEvading/parseEvading",
     "parseMaXi" : "babel-node parseMaXi/parseMaXi",
     "parsePromise" : "babel-node parsePromise/parsePromise",

@@ -5,7 +5,90 @@ var clc = require('cli-color')
 var moment = require('moment')
 var cht2eng = require('../utils/cht2eng');
 
-const START_ID = 1;
+var Name2ID = {};
+var District = {};
+var Legislators = {};
+
+fs.createReadStream('results/name2id.json')
+  .on('data', function(data) {
+	  //1. 讀 id 資料進來
+	  Name2ID = JSON.parse(data);
+	  if(!Name2ID){
+	  	throw new Error("No Name2ID data.");
+	  }
+  })
+  .on('error', function (err)  { console.error('Error', err);})
+  .on('end',   function ()     { 
+  	  
+  	  //2. 讀選區中英文對照表進來
+  	  fs.createReadStream('results/districts.json')
+  		.on('data', function(data) {
+	  		  District = JSON.parse(data);
+	  		  if(!District){
+	  		  	throw new Error("No districts data.");
+	  		  }
+  		})
+  		.on('error', function (err)  { console.error('Error', err);})
+  		.on('end',   function ()     { 
+  	  		
+          //3. parseLegislator
+          parseLegislator();
+          //
+	 	});
+	  
+  }); 
+
+function parseLegislator (argument) {
+	fs.createReadStream('parsePeople/legislatorData.csv')
+	  .pipe(csv())
+	  .on('data', function(data) {
+		  
+		  var representParty1 = {
+		  	partyCht : data['代表政黨1'],
+		  	startDate : data['到職時間1'],
+		  	endDate : data['離職時間1'],
+		  }
+		  var representParty2 = {
+		  	partyCht : data['代表政黨2'],
+		  	startDate : data['到職時間2'],
+		  	endDate : data['離職時間2'],
+		  }
+		  var parties = [representParty1];
+		  if(representParty2.partyCht){
+		  	parties.push(representParty2);
+		  }
+	
+		  var name = data['姓名'];
+		  var id = Name2ID[name];
+	  	  var constituency1 = District[data['第八屆選區1']];
+	  	  var constituency2 = data['第八屆選區2'];
+	
+		  var record = {
+		  	id : id,
+		  	name : name,
+		  	parties : parties,
+		  	constituency1 : constituency1,
+		  	hasResigned : yes_to_true(data['已離職'])
+		  }
+	
+		  /* 不一定每個人都有 */
+		  if(constituency2){
+		  	record.constituency2 = constituency2;
+		  }
+		  
+		  Legislators[id] = record;
+	
+	  })
+	  .on('error', function (err)  { console.error('Error', err);})
+	  .on('end',   function ()     { 
+	  	 
+	  	  fs.writeFile('./results/legislators.json', JSON.stringify(Legislators, null, 4), function (err) {
+	  		if (err) return console.log(err);
+	  		console.log(clc.bgGreen('legislators.json is saved.'));
+		  });
+
+	  });  
+}
 function yes_to_true(input){
 	if(!input) return "";
 	
@@ -27,62 +110,3 @@ function yes_to_true(input){
 		process.exit(1);
 	}
 }
-
-var Legislators = {};
-var currentID = START_ID;
-
-fs.createReadStream('parsePeople/legislatorData.csv')
-  .pipe(csv())
-  .on('data', function(data) {
-	  //console.log('row', data['議題名稱'])
-
-	  var representParty1 = {
-	  	partyCht : data['代表政黨1'],
-	  	startDate : data['到職時間1'],
-	  	endDate : data['離職時間1'],
-	  }
-	  var representParty2 = {
-	  	partyCht : data['代表政黨2'],
-	  	startDate : data['到職時間2'],
-	  	endDate : data['離職時間2'],
-	  }
-	  var parties = [representParty1];
-	  if(representParty2.partyCht){
-	  	parties.push(representParty2);
-	  }
-
-	  var record = {
-	  	id : currentID,
-	  	name : data['姓名'],
-	  	
-	  	parties : parties,
-
-	  	gender : data['性別'],
-	  	age : data['年齡'],
-	  	isCurrent : yes_to_true(data['是否為第八屆立委']),
-	  	constituency1 : data['第八屆選區1'],
-	  	constituency2 : data['第八屆選區2'],
-
-	  	hasResigned : yes_to_true(data['已離職']),
-	  	candidateConstituency1 : data['第九屆選區1'],
-	  	candidateConstituency2 : data['第九屆選區2']
-	  }
-	  
-	  console.log(record);
-	  
-	  Legislators[currentID] = record;
-
-	  currentID++;
-  })
-  .on('error', function (err)  { console.error('Error', err);})
-  .on('end',   function ()     { 
-  	 
-  	  fs.writeFile('./results/legislators.json', JSON.stringify(Legislators, null, 4), function (err) {
-  		if (err) return console.log(err);
-  		console.log(clc.bgGreen('legislators.json is saved.'));
-	  });
-	  
-	 
-	  
-  });  
-
