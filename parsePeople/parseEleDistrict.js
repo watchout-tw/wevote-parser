@@ -12,9 +12,16 @@ fs.createReadStream('parsePeople/districtData.csv')
   .pipe(csv())
   .on('data', function(data) {
 	  var cht = data['選區中文'];
+    if(!cht) return;
+
+    if(cht.indexOf('台')!==-1){
+        cht = cht.replace('台','臺');
+        console.log('-'+cht)
+    }
 	  var eng = data['選區英文簡稱'];
 	  Districts[cht] = eng;
 	  DistrictEng2Cht[eng] = cht;
+    
 	 
   })
   .on('error', function (err)  { console.error('Error', err);})

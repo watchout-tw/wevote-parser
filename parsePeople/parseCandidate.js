@@ -73,7 +73,7 @@ function parseCandidate(){
   				var id = Name2ID[name];
   				var party = handleParty(data['代表政黨']);
 
-  				var districtArea = District[data['縣市']];
+  				var districtArea = District[data['縣市'].replace('台','臺')];
   				var districtNo = data['選區'];
 
           /* 沒有重要的資訊，跳出警告 */

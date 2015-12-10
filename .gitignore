@@ -1,5 +1,5 @@
 .DS_Store
 *.csv
-!parsePeople/districtData.csv
 *.json
+!results/districts.json
 node_modules/

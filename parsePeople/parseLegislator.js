@@ -60,7 +60,7 @@ function parseLegislator (argument) {
 	
 		  var name = data['姓名'];
 		  var id = Name2ID[name];
-	  	  var constituency1 = District[data['第八屆選區1']];
+	  	  var constituency1 = District[data['第八屆選區1'].replace('台','臺')];
 	  	  var constituency2 = data['第八屆選區2'];
 	
 		  var record = {
