@@ -1,8 +1,9 @@
-var fs = require('fs')
-var csv = require('csv-parser')
-var clc = require('cli-color')
-var moment = require('moment')
-var cht2eng = require('../utils/cht2eng');
+var fs = require('fs'),
+    csv = require('csv-parser'),
+    clc = require('cli-color'),
+    moment = require('moment'),
+    cht2eng = require('../utils/cht2eng'),
+    handlePromisePosition = require('../utils/handlePromisePosition');
 
 var Name2ID = {};
 var District = {};
@@ -34,7 +35,6 @@ fs.createReadStream('results/name2id.json')
   	  		
           //3. 讀 FB 資料
           loadFB();
-          //
 	 	});
 	  
   });  
@@ -101,9 +101,54 @@ function parseCandidate(){
   					 record.districtNo = districtNo
   				}
 
-	  			//console.log(record);
-	  			
-	  			Candidates[id] = record;
+          var hasReply = (data['婚姻平權-立場'] || data['婚姻平權-立場'] || data['罷免-立場'] || data['公投-立場'] || data['核能-立場']) ? true : false;
+          var positions = {
+            marriageEquality : {
+                promise : {
+                   position : handlePromisePosition(data['婚姻平權-立場']),
+                   statement : data['婚姻平權-補充意見']
+                }
+            },
+            recall : {
+                promise : {
+                   position : handlePromisePosition(data['罷免-立場']),
+                   statement : data['罷免-補充意見']
+                }
+            },
+            referendum : {
+                promise : {
+                   position : handlePromisePosition(data['公投-立場']),
+                   statement : data['公投-補充意見']
+                }
+            },
+            nuclearPower : {
+                promise : {
+                   position : handlePromisePosition(data['核能-立場']),
+                   statement : data['核能-補充意見']
+                }
+            }
+        };
+        var bills = [
+            {
+              goal: data['法案1-目標'],
+              content: data['法案1-內容']
+            },
+            {
+              goal: data['法案2-目標'],
+              content: data['法案2-內容']
+            },
+            {
+              goal: data['法案3-目標'],
+              content: data['法案3-內容']
+            }
+        ];
+  	
+	  		record.hasReply = hasReply;
+        record.positions = positions;
+        record.bills = bills;
+
+        //push
+        Candidates[id] = record;
 	  	})
 	  	.on('error', function (err)  { console.error('Error', err);})
  		  .on('end',   function ()     { 

@@ -1,24 +1,14 @@
 var fs = require('fs'),
     csv = require('csv-parser'),
     clc = require('cli-color'),
-    cht2eng = require('../utils/cht2eng');
+    cht2eng = require('../utils/cht2eng'),
+    handlePromisePosition = require('../utils/handlePromisePosition');
 
 var partyOrder = require('../results/partyOrder.json');
 
 var Party = {}
 
-function handlePosition(pos){
-  if(pos){
-    if(pos === "不表態"){
-        return "none";
-    }else{
-        return cht2eng(pos)
-    }
-  }else{
-    return "none"
-  }
-  // because cht2eng doesn't handle ""
-}
+
 fs.createReadStream('parsePromise/partyData.csv')
   .pipe(csv())
   .on('data', function(data) {
@@ -35,25 +25,25 @@ fs.createReadStream('parsePromise/partyData.csv')
         positions : {
             marriageEquality : {
                 promise : {
-                   position : handlePosition(data['婚姻平權-立場']),
+                   position : handlePromisePosition(data['婚姻平權-立場']),
                    statement : data['婚姻平權-補充意見']
                 }
             },
             recall : {
                 promise : {
-                   position : handlePosition(data['罷免-立場']),
+                   position : handlePromisePosition(data['罷免-立場']),
                    statement : data['罷免-補充意見']
                 }
             },
             referendum : {
                 promise : {
-                   position : handlePosition(data['公投-立場']),
+                   position : handlePromisePosition(data['公投-立場']),
                    statement : data['公投-補充意見']
                 }
             },
             nuclearPower : {
                 promise : {
-                   position : handlePosition(data['核能-立場']),
+                   position : handlePromisePosition(data['核能-立場']),
                    statement : data['核能-補充意見']
                 }
             }
