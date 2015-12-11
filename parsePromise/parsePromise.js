@@ -16,7 +16,7 @@ fs.createReadStream('parsePromise/partyData.csv')
 
       var name = data['政黨'];
       var partyEng = cht2eng(name);
-      var hasReply = (data['婚姻平權-立場'] || data['婚姻平權-立場'] || data['罷免-立場'] || data['公投-立場'] || data['核能-立場']) ? true : false;
+      var hasReply = (data['婚姻平權-立場'] || data['罷免-立場'] || data['公投-立場'] || data['核能-立場'] || data['課綱-立場'] || data['司法改革-立場']) ? true : false;
 
       Party[partyEng] = {
         name : name,
@@ -45,6 +45,18 @@ fs.createReadStream('parsePromise/partyData.csv')
                 promise : {
                    position : handlePromisePosition(data['核能-立場']),
                    statement : data['核能-補充意見']
+                }
+            },
+            courseGuide : {
+                promise : {
+                   position : handlePromisePosition(data['課綱-立場']),
+                   statement : data['課綱-補充意見']
+                }
+            },
+            justiceReform : {
+                promise : {
+                   position : handlePromisePosition(data['司法改革-立場']),
+                   statement : data['司法改革-補充意見']
                 }
             }
         },
