@@ -176,11 +176,11 @@ function loadCandidates(){
 	
 	  		})
 	  		.on('error', function (err)  { console.error('Error', err);})
- 			.on('end',   function ()     { 
+ 			  .on('end',   function ()     { 
  				 
- 				resolve(Candidates);
+ 				    resolve(Candidates);
 	  	
- 			});  
+ 			  });  
  	});
 }
 

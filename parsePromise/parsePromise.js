@@ -23,18 +23,6 @@ fs.createReadStream('parsePromise/partyData.csv')
         id: partyEng,
         hasReply: hasReply,
         positions : {
-            courseGuide : {
-                promise : {
-                   position : handlePromisePosition(data['課綱-立場']),
-                   statement : data['課綱-補充意見']
-                }
-            },
-            justiceReform : {
-                promise : {
-                   position : handlePromisePosition(data['司法改革-立場']),
-                   statement : data['司法改革-補充意見']
-                }
-            },
             marriageEquality : {
                 promise : {
                    position : handlePromisePosition(data['婚姻平權-立場']),
@@ -57,6 +45,18 @@ fs.createReadStream('parsePromise/partyData.csv')
                 promise : {
                    position : handlePromisePosition(data['核能-立場']),
                    statement : data['核能-補充意見']
+                }
+            },
+            courseGuide : {
+                promise : {
+                   position : handlePromisePosition(data['課綱-立場']),
+                   statement : data['課綱-補充意見']
+                }
+            },
+            justiceReform : {
+                promise : {
+                   position : handlePromisePosition(data['司法改革-立場']),
+                   statement : data['司法改革-補充意見']
                 }
             }
         },
