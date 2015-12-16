@@ -4,29 +4,32 @@
   "description": "",
   "main": "parse.js",
   "scripts": {
-    "start" : "npm run parseI && npm run parseP && npm run parseE",
-    "parseI" : "babel-node parseIssue/parseIssue",
-
-    "updatePeople" : "npm run parseID && npm run parseL  && npm run parseC  && npm run parseP",
-
-    "parseL" : "babel-node parsePeople/parseLegislator",
-    "parseC" : "babel-node parsePeople/parseCandidate",
-    "parseP" : "babel-node parsePeople/parsePeople",
-    "parseID" : "babel-node parsePeople/parsePeopleId",
-    
-    "parseD" : "babel-node parsePeople/parseEleDistrict",
-    "parseE" : "babel-node parseEvading/parseEvading",
-    "parseMaXi" : "babel-node parseMaXi/parseMaXi",
-    "parsePartyPromise" : "babel-node parsePromise/parsePromise",
-    "parsePartyBlock" : "babel-node parsePartyBlock/parsePartyBlock",
-    "parsePartyOrder" : "babel-node parsePartyOrder/parsePartyOrder",
+    "start": "npm run parseI && npm run parseP && npm run parseE",
+    "parseI": "babel-node parseIssue/parseIssue",
+    "updatePeople": "npm run parseID && npm run parseL  && npm run parseC  && npm run parseP",
+    "parseL": "babel-node parsePeople/parseLegislator",
+    "parseC": "babel-node parsePeople/parseCandidate",
+    "parseP": "babel-node parsePeople/parsePeople",
+    "parseID": "babel-node parsePeople/parsePeopleId",
+    "parseD": "babel-node parsePeople/parseEleDistrict",
+    "parseE": "babel-node parseEvading/parseEvading",
+    "parseMaXi": "babel-node parseMaXi/parseMaXi",
+    "parsePartyPromise": "babel-node parsePromise/parsePromise",
+    "parsePartyBlock": "babel-node parsePartyBlock/parsePartyBlock",
+    "parsePartyOrder": "babel-node parsePartyOrder/parsePartyOrder",
     "parseAlt": "babel-node parseAlt/parseAlt",
+    "parseMusou": "babel-node parseMusou/parseMusou",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "soidid <soidid@gmail.com>",
   "dependencies": {
+    "async": "^1.5.0",
+    "cheerio": "^0.19.0",
     "cli-color": "^1.0.0",
     "csv-parser": "^1.7.0",
-    "moment": "^2.10.6"
+    "http": "0.0.0",
+    "jquery": "^2.1.4",
+    "moment": "^2.10.6",
+    "q": "^1.4.1"
   }
 }
