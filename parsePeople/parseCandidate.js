@@ -106,7 +106,9 @@ function parseCandidate(){
           //選區又劃分第 1 選區、第 2 選區 ... 等等
   				if(districtNo){ 
   					 record.districtNo = districtNo
-  				}
+  				}else{
+             record.districtNo = 'N/A';
+          }
 
           var hasReply = (data['婚姻平權-立場'] || data['罷免-立場'] || data['公投-立場'] || data['核能-立場'] || data['課綱-立場'] || data['司法改革-立場']) ? true : false;
           
