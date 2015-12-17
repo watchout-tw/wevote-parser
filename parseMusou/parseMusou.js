@@ -11,6 +11,13 @@ const articleList = [
   {
       name : "從殯儀館到廟口－邱顯智參選初體驗",
       link : "http://musou.tw/focuses/998"
+  }
+];
+/*
+[
+  {
+      name : "從殯儀館到廟口－邱顯智參選初體驗",
+      link : "http://musou.tw/focuses/998"
   },
   {
       name : "苗博雅：我進立法院也不會馬上提出廢死",
@@ -55,8 +62,13 @@ const articleList = [
   {
       name : "和哥哥「難攻大士」路線不同 鄭運鵬：發言人跟斯斯一樣",
       link : "http://musou.tw/focuses/1066"
+  },
+  {
+      name : "灣生孫女、伴侶是「前689」 呂欣潔要把多元性別觀點帶進國會",
+      link : "http://musou.tw/focuses/1073"
   }
 ];
+*/
 const excludeList = [
   "人物誌》李慶元：國民黨提名就當選是不對的日期2015-9-1作者阿草簡介×我是阿草，是總編輯喔。",
   "【立委候選人系列人物誌】",
