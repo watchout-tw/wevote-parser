@@ -9,7 +9,7 @@ var partyOrder = require('../results/partyOrder.json');
 var Party = {}
 
 
-fs.createReadStream('parsePromise/partyData.csv')
+fs.createReadStream('parsePartyPromise/partyData.csv')
   .pipe(csv())
   .on('data', function(data) {
 	  //console.log('row', data['議題名稱'])

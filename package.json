@@ -14,7 +14,7 @@
     "parseD": "babel-node parsePeople/parseEleDistrict",
     "parseE": "babel-node parseEvading/parseEvading",
     "parseMaXi": "babel-node parseMaXi/parseMaXi",
-    "parsePartyPromise": "babel-node parsePromise/parsePromise",
+    "parsePartyPromise": "babel-node parsePartyPromise/parsePartyPromise",
     "parsePartyBlock": "babel-node parsePartyBlock/parsePartyBlock",
     "parsePartyOrder": "babel-node parsePartyOrder/parsePartyOrder",
     "parseAlt": "babel-node parseAlt/parseAlt",
