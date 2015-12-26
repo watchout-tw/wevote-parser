@@ -13,16 +13,14 @@ var People = {};
 
 /* main */
 loadID().then((I)=>{
-	loadFB().then((FB)=>{
-		console.log("load fb")
-		loadLegislator().then((L)=>{
-				console.log("load legislator")
-			loadCandidates().then((C)=>{
-				console.log("load candidate")
-				Combine();
-			})
-		})
-	})
+	  loadLegislator().then((L)=>{
+	  		console.log("load legislator")
+	  		loadCandidates().then((C)=>{
+	  			  console.log("load candidate")
+	  			  Combine();
+	  		})
+	  })
+	
 })
 
 function Combine () {
@@ -40,9 +38,6 @@ function Combine () {
 
 
   		if(Candidates[id]){
-  			if(Candidates[id].fb){
-  				record.fb = Candidates[id].fb;
-  			}
   			if(Candidates[id].age){
   				record.age = Candidates[id].age;
   			}
@@ -80,21 +75,6 @@ function loadID () {
 	  		});  
 	});
 }
-function loadFB () {
-  	return new Promise(function(resolve, reject) {
-  		fs.createReadStream('parsePeople/candidateFBData.csv')
-  		    .pipe(csv())
-  		    .on('data', function(data) {
-  		        Facebook[data['姓名']] = data['Facebook']; 
-  		    })
-  		    .on('error', function (err)  { console.error('Error', err);})
-  		    .on('end',   function ()     { 
-  		     	
-  		     	resolve(Facebook);  
-  		  
-  			});
-  	});
-}
 
 function loadLegislator(){
 	return new Promise(function(resolve, reject) {
@@ -106,14 +86,14 @@ function loadLegislator(){
 
         	  	var age;
         	  	if(Number(data['出生西元年'])){ 
-        	  	    age = 2015 - Number(data['出生西元年']); 
+        	  	    age = 2016 - Number(data['出生西元年']); 
         	  	}
         	  	/* 沒有重要的資訊，跳出警告 */
-  				var name = data['姓名'];
-  				var id = Name2ID[name];
-        	  	if(!id){
-  					throw new Error("No ID found, name:"+name);
-  				}
+  				    var name = data['姓名'];
+  				    var id = Name2ID[name];
+        	     	if(!id){
+  				    	throw new Error("No ID found, name:"+name);
+  				    }
 	
         	  	/* 每個人都一定會有的資訊 */
         	  	record.name = name;
@@ -146,40 +126,36 @@ function loadCandidates(){
         	  	var record = {};
 		
         	  	//
-  				var name = data['姓名'];
-  				var id = Name2ID[name];
-        	  	var age;
-        	  	if(Number(data['出生西元年'])){ 
-        	  	    age = 2015 - Number(data['出生西元年']); 
-        	  	}
-	
+  				    var name = data['姓名'];
+  				    var id = Name2ID[name];
+        	  	
         	  	/* 沒有重要的資訊，跳出警告 */
-  				if(!id){
-  					throw new Error("No ID found, name:"+name);
-  				}
+  				    if(!id){
+  				    	throw new Error("No ID found, name:"+name);
+  				    }
 	
         	  	/* 每個人都一定會有的資訊 */
         	  	record.name = name;
         	  	record.id = id;
 	
-        	  	//年齡
-        	  	if(age){
-        	  	   record.age = age;
-        	  	}
-        	  	//臉書
-        	  	if(Facebook[name]){
-        	  	   record.fb = Facebook[name];
-        	  	}
-	  				
-	  			//console.log(record);
-	  			Candidates[id] = record;
+	  			    //console.log(record);
+	  			    Candidates[id] = record;
 	
 	  		})
 	  		.on('error', function (err)  { console.error('Error', err);})
  			  .on('end',   function ()     { 
- 				 
- 				    resolve(Candidates);
-	  	
+ 				     
+            fs.createReadStream('parsePeople/candidateNumberData.csv')
+              .pipe(csv())
+              .on('data', function(data) {
+                 var name = data['姓名'];
+                 var id = Name2ID[name];
+                 Candidates[id].age = 2016-(1911+Number(data['民國年']));
+              })
+              .on('error', function (err)  { console.error('Error', err);})
+              .on('end',   function ()     { 
+                 resolve(Candidates);  
+              });
  			  });  
  	});
 }

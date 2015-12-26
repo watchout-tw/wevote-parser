@@ -7,8 +7,8 @@ var fs = require('fs'),
 
 var Name2ID = {};
 var District = {};
-var Contacts = {};
-
+var NoContacts = {};
+var Numbers = {};
 var Candidates = {};
 
 fs.createReadStream('results/name2id.json')
@@ -40,25 +40,36 @@ fs.createReadStream('results/name2id.json')
   });  
 
 function loadContact (argument) {
-  fs.createReadStream('parsePeople/candidateFBData.csv')
+  fs.createReadStream('parsePeople/candidateContactData.csv')
       .pipe(csv())
       .on('data', function(data) {
           var name = data['姓名'];
           var id = Name2ID[name];
-
-          if(data['Facebook']){
-              Contacts[id] = {
-                fb: data['Facebook']
-              }
+          if(data['無聯繫方式']){
+              NoContacts[id] = true;
           }
       })
       .on('error', function (err)  { console.error('Error', err);})
       .on('end',   function ()     { 
-        console.log(Contacts)
-        //4. parse 候選人資料
-        parseCandidate();    
+        //4. parse 競選編號跟生日
+        loadNumber();    
     
     });
+}
+function loadNumber(){
+  fs.createReadStream('parsePeople/candidateNumberData.csv')
+      .pipe(csv())
+      .on('data', function(data) {
+          var name = data['姓名'];
+          var id = Name2ID[name];
+          Numbers[id] = Number(data['抽籤號次']);
+      })
+      .on('error', function (err)  { console.error('Error', err);})
+      .on('end',   function ()     { 
+        //5. parse 候選人資料
+        parseCandidate();    
+    
+  });
 }
 function handleParty(partyCht){
   if(partyCht === "無"){
@@ -97,6 +108,7 @@ function parseCandidate(){
           /* 每個人都一定會有的資訊 */
           record.id = id;//可以考慮不放
           record.name = name;//可以考慮不放
+          record.number = Numbers[id];//競選編號
           
           record.party = party;
           record.districtArea = districtArea;
@@ -112,9 +124,9 @@ function parseCandidate(){
 
           var hasReply = (data['婚姻平權-立場'] || data['罷免-立場'] || data['公投-立場'] || data['核能-立場'] || data['課綱-立場'] || data['司法改革-立場']) ? true : false;
           
-          var contactAvaliable = false;
-          if(Contacts[id]){
-              contactAvaliable = true;
+          var contactAvaliable = true;
+          if(NoContacts[id]){
+              contactAvaliable = false;
           }
 
           record.contactAvaliable = contactAvaliable;
