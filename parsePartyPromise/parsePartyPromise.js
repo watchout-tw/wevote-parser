@@ -16,11 +16,12 @@ fs.createReadStream('parsePartyPromise/partyData.csv')
 
       var name = data['政黨'];
       var partyEng = cht2eng(name);
-      var hasReply = (data['婚姻平權-立場'] || data['罷免-立場'] || data['公投-立場'] || data['核能-立場'] || data['課綱-立場'] || data['司法改革-立場']) ? true : false;
+      var hasReply = (data['婚姻平權-立場'] || data['罷免-立場'] || data['公投-立場'] || data['核能-立場'] || data['課綱-立場'] || data['司法改革-立場'] ) ? true : false;
 
       Party[partyEng] = {
         name : name,
         id: partyEng,
+        number: data['編號'],
         hasReply: hasReply,
         positions : {
             marriageEquality : {
