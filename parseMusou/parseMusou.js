@@ -9,8 +9,8 @@ var q = require('q'),
 var MusouArticles = {};
 const articleList = [
   {
-      name : "從殯儀館到廟口－邱顯智參選初體驗",
-      link : "http://musou.tw/focuses/998"
+      name : "「曾欣賞馬英九」楊實秋：如今我引以為戒",
+      link : "http://musou.tw/focuses/1078"
   }
 ];
 /*

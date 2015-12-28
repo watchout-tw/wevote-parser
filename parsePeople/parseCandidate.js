@@ -45,7 +45,7 @@ function loadContact (argument) {
       .on('data', function(data) {
           var name = data['姓名'];
           var id = Name2ID[name];
-          if(data['無聯繫方式']){
+          if(data['無聯繫方式'] && !data['已回覆']){
               NoContacts[id] = true;
           }
       })
