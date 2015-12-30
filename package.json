@@ -5,7 +5,7 @@
   "main": "parse.js",
   "scripts": {
     "start": "npm run parseI && npm run parseP && npm run parseE",
-    "parseI": "babel-node parseIssue/parseIssue",
+    "parseIssue": "babel-node parseIssue/parseIssue",
     "updatePeople": "npm run parseID && npm run parseL  && npm run parseC  && npm run parseP",
     "parseL": "babel-node parsePeople/parseLegislator",
     "parseC": "babel-node parsePeople/parseCandidate",

@@ -33,9 +33,19 @@ fs.createReadStream('parseIssue/data.csv')
 	  if(data['澄清說明最後更新時間']){
 	  	clarificationLastUpdate = format_date_to_unix_milliseconds(data['澄清說明最後更新時間'])
 	  }
+
+	  //因為改了議題中文短稱
+	  let issueTitle = data['議題名稱'];
+	  if(issueTitle === "核能"){
+	  	 issueTitle = "核四停建"
+	  }
+	  if(issueTitle === "課綱"){
+	  	 issueTitle = "課綱程序透明"
+	  }
+
 	  var record = {
 	  	id : currentID,
-	  	issue : data['議題名稱'],
+	  	issue : issueTitle,
 	  	legislator : data['立委名'].trim(),
 	  	party : cht2eng(data['當時的政黨']),
 	  	date : format_date_to_unix_milliseconds(data['發言日期']),// try if we can sort this format?
