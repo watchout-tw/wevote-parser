@@ -42,7 +42,7 @@ function Combine () {
   				record.age = Candidates[id].age;
   			}
   		}
-  		if(Legislator[id]){
+  		if(Legislator[id] &&!record.age){//候選人資料精確到月，以候選人資料為主要來源
   			if(Legislator[id].age){
   				record.age = Legislator[id].age;
   			}
@@ -148,9 +148,15 @@ function loadCandidates(){
             fs.createReadStream('parsePeople/candidateNumberData.csv')
               .pipe(csv())
               .on('data', function(data) {
-                 var name = data['姓名'];
-                 var id = Name2ID[name];
-                 Candidates[id].age = 2016-(1911+Number(data['民國年']));
+                var name = data['姓名'];
+                var id = Name2ID[name];
+                let age = 2016-(1911+Number(data['民國年']));
+                let Month = Number(data['月日'].split('/')[0]);
+                let Day = Number(data['月日'].split('/')[1]);
+                if((Month > 1) || (Month === 1 && Day > 17)){
+                  age -= 1;
+                }
+                Candidates[id].age = age;
               })
               .on('error', function (err)  { console.error('Error', err);})
               .on('end',   function ()     { 
