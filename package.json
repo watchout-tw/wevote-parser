@@ -19,6 +19,7 @@
     "parsePartyOrder": "babel-node parsePartyOrder/parsePartyOrder",
     "parseAlt": "babel-node parseAlt/parseAlt",
     "parseMusou": "babel-node parseMusou/parseMusou",
+    "parseCEC": "babel-node parseCEC/parseCEC",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "soidid <soidid@gmail.com>",
@@ -30,6 +31,7 @@
     "http": "0.0.0",
     "jquery": "^2.1.4",
     "moment": "^2.10.6",
-    "q": "^1.4.1"
+    "q": "^1.4.1",
+    "superagent-no-cache": "^0.1.0"
   }
 }
