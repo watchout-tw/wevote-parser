@@ -48,23 +48,31 @@ function trimEng(input){
 }
 function trimEntry(entry){
   const SEPARATOR = "<br/>";
-  const reg = /\s*(&nbsp;)+(<BR>)*\s*/g;
+  const regA = /\s+/g;
+  const regB = /\s*(&nbsp;)+(<BR>)*\s*/g;
+  const regC = /(<br\/>)+/g;
   
   
   if(entry.rptedu){
-      entry.rptedu = entry.rptedu.replace(reg, SEPARATOR);
+      entry.rptedu = entry.rptedu.replace(regA, SEPARATOR);
+      entry.rptedu = entry.rptedu.replace(regB, SEPARATOR);
+      entry.rptedu = entry.rptedu.replace(regC, SEPARATOR);
       
       entry.rptedu = entry.rptedu.trim();
       entry.rptedu = entry.rptedu.replace(/\s+/g, '');
   }
   if(entry.rptexp){
-      entry.rptexp = entry.rptexp.replace(reg, SEPARATOR);
+      entry.rptexp = entry.rptexp.replace(regA, SEPARATOR);
+      entry.rptexp = entry.rptexp.replace(regB, SEPARATOR);
+      entry.rptexp = entry.rptexp.replace(regC, SEPARATOR);
       
       entry.rptexp = entry.rptexp.trim();
       entry.rptexp = entry.rptexp.replace(/\s+/g, '');
   }
   if(entry.rptpolitics){
-      entry.rptpolitics = entry.rptpolitics.replace(reg, SEPARATOR);
+      entry.rptpolitics = entry.rptpolitics.replace(regA, SEPARATOR);
+      entry.rptpolitics = entry.rptpolitics.replace(regB, SEPARATOR);
+      entry.rptpolitics = entry.rptpolitics.replace(regC, SEPARATOR);
       
       entry.rptpolitics = entry.rptpolitics.trim();
       entry.rptpolitics = entry.rptpolitics.replace(/\s+/g, '');
