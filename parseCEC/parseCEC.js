@@ -48,7 +48,7 @@ function trimEng(input){
 }
 function trimEntry(entry){
   const SEPARATOR = "<br/>";
-  const regA = /\s+/g;
+  const regA = /(?!.)\s+/g;
   const regB = /\s*(&nbsp;)+(<BR>)*\s*/g;
   const regC = /(<br\/>)+/g;
   
@@ -76,6 +76,11 @@ function trimEntry(entry){
       
       entry.rptpolitics = entry.rptpolitics.trim();
       entry.rptpolitics = entry.rptpolitics.replace(/\s+/g, '');
+      entry.rptpolitics = entry.rptpolitics.replace('Ｍｏｒｅ<br/>ｍｏｎｅｙ<br/>ｍｏｒｅ<br/>ｒｅｓｐｏｎｓｉｂｉｌｉｔｙ',
+        'Ｍｏｒｅ ｍｏｎｅｙ ｍｏｒｅ ｒｅｓｐｏｎｓｉｂｉｌｉｔｙ')
+      entry.rptpolitics = entry.rptpolitics.replace('Ｍｏｒｅｍｏｎｅｙｍｏｒｅｒｅｓｐｏｎｓｉｂｉｌｉｔｙ',
+        'Ｍｏｒｅ ｍｏｎｅｙ ｍｏｒｅ ｒｅｓｐｏｎｓｉｂｉｌｉｔｙ')
+
   }
 
   return entry;
