@@ -46,6 +46,32 @@ function trimEng(input){
   return finalText;
 
 }
+function trimEntry(entry){
+  const SEPARATOR = "<br/>";
+  const reg = /\s*(&nbsp;)+(<BR>)*\s*/g;
+  
+  
+  if(entry.rptedu){
+      entry.rptedu = entry.rptedu.replace(reg, SEPARATOR);
+      
+      entry.rptedu = entry.rptedu.trim();
+      entry.rptedu = entry.rptedu.replace(/\s+/g, '');
+  }
+  if(entry.rptexp){
+      entry.rptexp = entry.rptexp.replace(reg, SEPARATOR);
+      
+      entry.rptexp = entry.rptexp.trim();
+      entry.rptexp = entry.rptexp.replace(/\s+/g, '');
+  }
+  if(entry.rptpolitics){
+      entry.rptpolitics = entry.rptpolitics.replace(reg, SEPARATOR);
+      
+      entry.rptpolitics = entry.rptpolitics.trim();
+      entry.rptpolitics = entry.rptpolitics.replace(/\s+/g, '');
+  }
+
+  return entry;
+}
 function parseCEC(){
   console.log(CurrentTime.format("YYYY/MM/DD HH:mm"))//2016/01/04 12:32
   CEC.updateTime = CurrentTime.format("YYYY/MM/DD HH:mm");
@@ -73,7 +99,9 @@ function parseCEC(){
     if(!id){
       throw new Error("No CHT_Name2Id data:"+name);
     }
-    CEC.data[id] = entry;
+    
+    CEC.data[id] = trimEntry(entry);
+
 
   })
   Type4['山地原住民立委'].map((entry, i)=>{
@@ -86,7 +114,7 @@ function parseCEC(){
     if(!id){
       throw new Error("No CHT_Name2Id data:"+name);
     }
-    CEC.data[id] = entry;
+    CEC.data[id] =  trimEntry(entry);
 
   })
   Type5['平地原住民立委'].map((entry, i)=>{
@@ -98,7 +126,7 @@ function parseCEC(){
     if(!id){
       throw new Error("No CHT_Name2Id data:"+name);
     }
-    CEC.data[id] = entry;
+    CEC.data[id] = trimEntry(entry);
 
   })
 
