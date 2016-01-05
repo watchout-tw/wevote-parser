@@ -59,7 +59,9 @@ function trimEntry(entry){
       entry.rptedu = entry.rptedu.replace(regC, SEPARATOR);
       
       entry.rptedu = entry.rptedu.trim();
-      entry.rptedu = entry.rptedu.replace(/\s+/g, '');
+      //entry.rptedu = entry.rptedu.replace(/\s*\s+/g, '');
+
+
   }
   if(entry.rptexp){
       entry.rptexp = entry.rptexp.replace(regA, SEPARATOR);
@@ -67,7 +69,10 @@ function trimEntry(entry){
       entry.rptexp = entry.rptexp.replace(regC, SEPARATOR);
       
       entry.rptexp = entry.rptexp.trim();
-      entry.rptexp = entry.rptexp.replace(/\s+/g, '');
+      //entry.rptexp = entry.rptexp.replace(/\s*\s+/g, '');
+
+      // entry.rptexp = entry.rptexp.replace('BERKLEECOLLEGEOFMusic',
+      //   'BERKLEE COLLEGE OF Music');
   }
   if(entry.rptpolitics){
       entry.rptpolitics = entry.rptpolitics.replace(regA, SEPARATOR);
@@ -75,11 +80,15 @@ function trimEntry(entry){
       entry.rptpolitics = entry.rptpolitics.replace(regC, SEPARATOR);
       
       entry.rptpolitics = entry.rptpolitics.trim();
-      entry.rptpolitics = entry.rptpolitics.replace(/\s+/g, '');
-      entry.rptpolitics = entry.rptpolitics.replace('Ｍｏｒｅ<br/>ｍｏｎｅｙ<br/>ｍｏｒｅ<br/>ｒｅｓｐｏｎｓｉｂｉｌｉｔｙ',
-        'Ｍｏｒｅ ｍｏｎｅｙ ｍｏｒｅ ｒｅｓｐｏｎｓｉｂｉｌｉｔｙ')
-      entry.rptpolitics = entry.rptpolitics.replace('Ｍｏｒｅｍｏｎｅｙｍｏｒｅｒｅｓｐｏｎｓｉｂｉｌｉｔｙ',
-        'Ｍｏｒｅ ｍｏｎｅｙ ｍｏｒｅ ｒｅｓｐｏｎｓｉｂｉｌｉｔｙ')
+      //entry.rptpolitics = entry.rptpolitics.replace(/\s{2,}/g, '');
+      
+      // entry.rptpolitics = entry.rptpolitics.replace('Ｍｏｒｅ<br/>ｍｏｎｅｙ<br/>ｍｏｒｅ<br/>ｒｅｓｐｏｎｓｉｂｉｌｉｔｙ',
+      //   'Ｍｏｒｅ ｍｏｎｅｙ ｍｏｒｅ ｒｅｓｐｏｎｓｉｂｉｌｉｔｙ');
+      // entry.rptpolitics = entry.rptpolitics.replace('Ｍｏｒｅｍｏｎｅｙｍｏｒｅｒｅｓｐｏｎｓｉｂｉｌｉｔｙ',
+      //   'Ｍｏｒｅ ｍｏｎｅｙ ｍｏｒｅ ｒｅｓｐｏｎｓｉｂｉｌｉｔｙ');
+
+      
+     
 
   }
 
