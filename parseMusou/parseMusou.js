@@ -9,12 +9,16 @@ var q = require('q'),
 var MusouArticles = {};
 const articleList = [
   {
-      name : "搖滾魂對抗舊威權 林昶佐有機會帶新政治進國會？",
-      link : "http://musou.tw/focuses/1081"
+      name : "馬躍・比吼：十年後，我們還要夜宿凱道嗎？",
+      link : "http://musou.tw/focuses/1082"
   }
 ];
 /*
 [ 
+ {
+      name : "搖滾魂對抗舊威權 林昶佐有機會帶新政治進國會？",
+      link : "http://musou.tw/focuses/1081"
+  },
   {
       name : "「曾欣賞馬英九」楊實秋：如今我引以為戒",
       link : "http://musou.tw/focuses/1078"
