@@ -20,6 +20,7 @@
     "parseAlt": "babel-node parseAlt/parseAlt",
     "parseMusou": "babel-node parseMusou/parseMusou",
     "parseCEC": "babel-node parseCEC/parseCEC",
+    "parseElectedBlock" : "babel-node parseElectedBlock/parseElectedBlock",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "soidid <soidid@gmail.com>",

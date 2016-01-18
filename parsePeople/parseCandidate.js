@@ -9,6 +9,7 @@ var Name2ID = {};
 var District = {};
 var NoContacts = {};
 var Numbers = {};
+var IsElected = {};
 var Candidates = {};
 
 fs.createReadStream('results/name2id.json')
@@ -61,8 +62,10 @@ function loadNumber(){
       .pipe(csv())
       .on('data', function(data) {
           var name = data['姓名'];
+          var isElected = data['註記']==="◎" ? true : false;
           var id = Name2ID[name];
           Numbers[id] = Number(data['抽籤號次']);
+          IsElected[id] = isElected;
       })
       .on('error', function (err)  { console.error('Error', err);})
       .on('end',   function ()     { 
@@ -109,6 +112,7 @@ function parseCandidate(){
           record.id = id;//可以考慮不放
           record.name = name;//可以考慮不放
           record.number = Numbers[id];//競選編號
+          record.isElected = IsElected[id];//是否當選
           
           record.party = party;
           record.districtArea = districtArea;
